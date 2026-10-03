@@ -268,3 +268,69 @@ blocked}], total}`. Produce the same `pathArray` token format as the server so r
    `z1–z4`; whether `isBlind` maps hide the path; meaning of the 3 empty map-code header fields.
 4. **Rendering:** replicate with a canvas or CSS grid. The look needs `maps.css` and the
    `images/` sprites (not downloaded yet; copyright pathery.com 2011–2018, fine for personal use).
+
+## 9. Addendum: probe results (2026-10-03)
+
+36 `getpath` probes (Phil approved) were sent sequentially, 3-4 s apart, with `tools/oracle/record.ts`.
+Fixtures are `tests/fixtures/oracle/<name>.json`; `node tools/oracle/check-corpus.mjs -v` compares each
+with `analyst.js`. All 36 got a normal path response (no error replies). Open questions from §5/§8:
+
+- **Several `uN` exits: the exit nearest to the current target by real path distance wins** (not
+  Manhattan, not first/last). Ties go to the first exit in row-major order. A walled-in exit is
+  never chosen. `u_far_exit_nearest_target` (col 7 of 3/7), `u_first_exit_nearest_target`,
+  `u_three_exits` (last of three), `u_manhattan_vs_path` (3,2 beats Manhattan-closer 4,0),
+  `u_exit_tie_equal_dist` ("1,0" over "1,2"), `u_sealed_exit`. analyst.js agrees on all.
+- **Two teleport numbers** are independent: each tN is spent separately, tokens
+  `u,"4,0",u ... u,"9,0",u` (`u_two_numbers_two_exits`). Agrees.
+- **Teleports with dual paths: state is per path.** Both paths warp on their first visit; the
+  second path is not affected by the first path's spent teleports; each path emits its own
+  `"tN"` on a later visit (`dual_tp_shared_state` 9, `dual_tp_reuse_twice` 13). Agrees.
+- **tN without uN: the path is blocked.** Walking onto `t1` with no `u1` gives `blocked:true`,
+  `moves:0`, partial `pathArray ["f1",2,2,"r"]` (moves up to the teleport tile, then `"r"`), no
+  `lastTarget` (`t_no_exit`). analyst.js is **wrong**: it treats `t1` as a plain tile (5 moves).
+- **uN without tN** is a plain passable tile (`u_no_entry`, 5 moves). Agrees.
+- **Missing checkpoint numbers: blocked, score 0.** Targets are c1..cN in order with N = highest
+  number present; the first missing number cannot be reached, so that path is blocked with
+  `lastTarget {"c":k}` and `pathArray` = tokens up to and including `"ck"` (e.g. `["c1",2,2,"r","c2"]`).
+  Only the first blocked path is reported, so on a dual map `path` has one entry and
+  `totalMoves` is 0 (`cp_gap_c1_c3`, `_c2_only`, `_c1_c2_c4` (stops at `c3`), `_c1_c4`, `_c2_c3_no_c1`,
+  `_dual`). analyst.js is **wrong**: it stops at the first gap and goes to `f` (8, 8, 14, 8, 8, 18).
+  Which path order is blocked first on a dual map where only the red path is affected: not tested.
+- **Ice (`z5`), observed rules**, all identical to analyst.js:
+  - Dead ends are blocked: ice then rock (`ice_deadend_rock`), then map edge (`ice_deadend_edge`),
+    then a player wall (`ice_wall_ahead`), and ice-to-ice turning chains (`ice_chain_turn`). The
+    path never turns on ice, not even when forced to by an obstacle ahead.
+  - Leaving ice onto a plain tile: free again at once, turn allowed on that first plain tile
+    (`ice_slide_continues`: 2,2,3). Vertical ice works (`ice_vertical`).
+  - Tie-breaking is still U,R,D,L over the ice-aware search: an equal-length route via ice wins
+    when it starts with R (`ice_tie_prefers_ice`: 2,2,3 rather than 3,2,2). Red path on
+    `ice_dual` goes 1,2,2,2 through the `s1` tile and the ice.
+- **`z1`-`z4`:** `z1` is **impassable** (like a rock): `z1_center` detours (4 moves, route 1,2,2,3),
+  `z1_down` is blocked. `z2`, `z3`, `z4` are plain passable tiles in every tested direction
+  (right in `z*_center`, down in `z*_down`, left in `z*_left`); up not tested. No error is
+  returned for any of them. They never occur on real maps; engine may treat z1 as a rock.
+  analyst.js treats z1 as plain (wrong); z2-z4 agree.
+
+Blocked paths: the reported `end` is junk (`"0,0"`, `"-1,1"`, `"7,3"`); never compare it.
+analyst.js direction tokens are wrong on width-1 boards (down is emitted as 2, since its index
+step +1 is read as "right"); moves agree. Real maps are never 1 wide.
+
+### Per-feature classification of analyst.js
+
+| Feature                                   | Agrees with server? | Evidence                                                  |
+| ----------------------------------------- | ------------------- | --------------------------------------------------------- |
+| Plain shortest path, U,R,D,L tie-break    | Yes                 | 280/280 plain scoreboard rows, probe__/getpath__ fixtures |
+| Checkpoints in order, dual reverse order  | Yes                 | scoreboard, probe_dual3cp                                 |
+| Checkpoint numbers with gaps              | **No**              | 6 `cp_gap_*` fixtures (server: blocked)                   |
+| Multiple targets of one type, multi-start | Yes                 | probe_startnear/starttie/multistart, scoreboard           |
+| `x1`/`x2`, `p1`                           | Yes                 | scoreboard 21/21 and 8/8, probe_x*/ppass                  |
+| Teleport warp, spent after one use        | Yes                 | 292/292 scoreboard, probe_teleport/tptwo, tokens exact    |
+| Several `uN` exits (nearest, tie, sealed) | Yes                 | 6 `u_*` fixtures                                          |
+| Per-path teleport state on dual maps      | Yes                 | `dual_tp_*`                                               |
+| `tN` with no `uN`                         | **No**              | `t_no_exit` (server: blocked)                             |
+| `uN` with no `tN`                         | Yes                 | `u_no_entry`                                              |
+| Ice (`z5`): moves, dead ends, turns, ties | Yes                 | 89/89 scoreboard rows, 9 `ice_*`/probe_ice fixtures       |
+| `z1` tile                                 | **No**              | `z1_center`, `z1_down` (server: impassable)               |
+| `z2`-`z4` tiles                           | Yes (as plain)      | 7 `z*_center/down/left` fixtures; up not tested           |
+| Width-1 boards, direction tokens          | **No** (tokens)     | `z2_down` etc.; moves agree, irrelevant for real maps     |
+| Blind maps, wall + ice + teleport combos  | Not tested          |                                                           |

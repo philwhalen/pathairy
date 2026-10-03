@@ -1,0 +1,59 @@
+{
+  "name": "dual_tp_reuse_twice",
+  "question": "teleports with dual paths",
+  "code": "10.1.0.dual_tp_re...:,s1.,s2.,t1.1,u1.1,t1.2,f1.",
+  "solution": "..:",
+  "response": {
+    "totalMoves": 13,
+    "blocked": false,
+    "path": [
+      {
+        "start": "0,0",
+        "end": "9,0",
+        "pathArray": [
+          "f1",
+          2,
+          2,
+          "u",
+          "4,0",
+          "u",
+          2,
+          2,
+          "t1",
+          2,
+          2,
+          2,
+          "r"
+        ],
+        "moves": 7,
+        "blocked": false
+      },
+      {
+        "start": "1,0",
+        "end": "9,0",
+        "pathArray": [
+          "f1",
+          2,
+          "u",
+          "4,0",
+          "u",
+          2,
+          2,
+          "t1",
+          2,
+          2,
+          2,
+          "r"
+        ],
+        "moves": 6,
+        "blocked": false
+      }
+    ],
+    "mapid": -1,
+    "isChallenge": false,
+    "mapcodeExecuted": "10.1.0.dual_tp_re...:,s1.,s2.,t1.1,u1.1,t1.2,f1.",
+    "usedSolution": "..:",
+    "best": 0,
+    "bestby": "no one"
+  }
+}

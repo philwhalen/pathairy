@@ -1,0 +1,33 @@
+{
+  "name": "u_three_exits",
+  "question": "several uN exits",
+  "code": "13.1.0.u_three_ex...:,s1.,t1.1,u1.1,u1.5,u1.,f1.",
+  "solution": "..:",
+  "response": {
+    "totalMoves": 2,
+    "blocked": false,
+    "path": [
+      {
+        "start": "0,0",
+        "end": "12,0",
+        "pathArray": [
+          "f1",
+          2,
+          "u",
+          "11,0",
+          "u",
+          2,
+          "r"
+        ],
+        "moves": 2,
+        "blocked": false
+      }
+    ],
+    "mapid": -1,
+    "isChallenge": false,
+    "mapcodeExecuted": "13.1.0.u_three_ex...:,s1.,t1.1,u1.1,u1.5,u1.,f1.",
+    "usedSolution": "..:",
+    "best": 0,
+    "bestby": "no one"
+  }
+}

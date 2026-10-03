@@ -1,0 +1,34 @@
+{
+  "name": "u_exit_tie_equal_dist",
+  "question": "several uN exits",
+  "code": "3.3.0.u_exit_tie...:1,u1.1,s1.,t1.,f1.1,u1.",
+  "solution": "..:",
+  "response": {
+    "totalMoves": 3,
+    "blocked": false,
+    "path": [
+      {
+        "start": "0,1",
+        "end": "2,1",
+        "pathArray": [
+          "f1",
+          2,
+          "u",
+          "1,0",
+          "u",
+          2,
+          3,
+          "r"
+        ],
+        "moves": 3,
+        "blocked": false
+      }
+    ],
+    "mapid": -1,
+    "isChallenge": false,
+    "mapcodeExecuted": "3.3.0.u_exit_tie...:1,u1.1,s1.,t1.,f1.1,u1.",
+    "usedSolution": "..:",
+    "best": 0,
+    "bestby": "no one"
+  }
+}

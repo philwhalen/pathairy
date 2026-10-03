@@ -1,0 +1,28 @@
+{
+  "name": "ice_chain_turn",
+  "question": "ice",
+  "code": "3.2.0.ice_chain_...:,s1.,z5.,r1.,r1.,z5.,f1.",
+  "solution": "..:",
+  "response": {
+    "totalMoves": 0,
+    "blocked": true,
+    "path": [
+      {
+        "start": "0,0",
+        "end": "0,0",
+        "blocked": true,
+        "lastTarget": {
+          "f": 1
+        },
+        "pathArray": [
+          "f1"
+        ],
+        "moves": 0
+      }
+    ],
+    "mapid": -1,
+    "isChallenge": false,
+    "mapcodeExecuted": "3.2.0.ice_chain_...:,s1.,z5.,r1.,r1.,z5.,f1.",
+    "usedSolution": "..:"
+  }
+}

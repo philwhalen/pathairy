@@ -1,0 +1,31 @@
+{
+  "name": "ice_slide_continues",
+  "question": "ice",
+  "code": "5.2.0.ice_slide_...:,s1.,z5.3,r1.1,f1.",
+  "solution": "..:",
+  "response": {
+    "totalMoves": 3,
+    "blocked": false,
+    "path": [
+      {
+        "start": "0,0",
+        "end": "2,1",
+        "pathArray": [
+          "f1",
+          2,
+          2,
+          3,
+          "r"
+        ],
+        "moves": 3,
+        "blocked": false
+      }
+    ],
+    "mapid": -1,
+    "isChallenge": false,
+    "mapcodeExecuted": "5.2.0.ice_slide_...:,s1.,z5.3,r1.1,f1.",
+    "usedSolution": "..:",
+    "best": 0,
+    "bestby": "no one"
+  }
+}

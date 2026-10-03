@@ -1,0 +1,45 @@
+{
+  "name": "ice_dual",
+  "question": "ice",
+  "code": "4.2.0.ice_dual...:,s1.,z5.1,f1.,s2.2,r1.",
+  "solution": "..:",
+  "response": {
+    "totalMoves": 7,
+    "blocked": false,
+    "path": [
+      {
+        "start": "0,0",
+        "end": "3,0",
+        "pathArray": [
+          "f1",
+          2,
+          2,
+          2,
+          "r"
+        ],
+        "moves": 3,
+        "blocked": false
+      },
+      {
+        "start": "0,1",
+        "end": "3,0",
+        "pathArray": [
+          "f1",
+          1,
+          2,
+          2,
+          2,
+          "r"
+        ],
+        "moves": 4,
+        "blocked": false
+      }
+    ],
+    "mapid": -1,
+    "isChallenge": false,
+    "mapcodeExecuted": "4.2.0.ice_dual...:,s1.,z5.1,f1.,s2.2,r1.",
+    "usedSolution": "..:",
+    "best": 0,
+    "bestby": "no one"
+  }
+}

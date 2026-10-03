@@ -1,0 +1,32 @@
+{
+  "name": "z1_center",
+  "question": "z1-z4",
+  "code": "3.3.0.z1_center...:3,s1.,z1.,f1.",
+  "solution": "..:",
+  "response": {
+    "totalMoves": 4,
+    "blocked": false,
+    "path": [
+      {
+        "start": "0,1",
+        "end": "2,1",
+        "pathArray": [
+          "f1",
+          1,
+          2,
+          2,
+          3,
+          "r"
+        ],
+        "moves": 4,
+        "blocked": false
+      }
+    ],
+    "mapid": -1,
+    "isChallenge": false,
+    "mapcodeExecuted": "3.3.0.z1_center...:3,s1.,z1.,f1.",
+    "usedSolution": "..:",
+    "best": 0,
+    "bestby": "no one"
+  }
+}

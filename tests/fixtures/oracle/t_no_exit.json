@@ -1,0 +1,28 @@
+{
+  "name": "t_no_exit",
+  "question": "teleport edge cases",
+  "code": "6.1.0.t_no_exit...:,s1.1,t1.2,f1.",
+  "solution": "..:",
+  "response": {
+    "totalMoves": 0,
+    "blocked": true,
+    "path": [
+      {
+        "start": "0,0",
+        "end": "5,0",
+        "pathArray": [
+          "f1",
+          2,
+          2,
+          "r"
+        ],
+        "moves": 0,
+        "blocked": true
+      }
+    ],
+    "mapid": -1,
+    "isChallenge": false,
+    "mapcodeExecuted": "6.1.0.t_no_exit...:,s1.1,t1.2,f1.",
+    "usedSolution": "..:"
+  }
+}

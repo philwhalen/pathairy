@@ -1,0 +1,53 @@
+{
+  "name": "dual_tp_shared_state",
+  "question": "teleports with dual paths",
+  "code": "11.1.0.dual_tp_sh...:,s1.,s2.1,t1.4,u1.1,f1.",
+  "solution": "..:",
+  "response": {
+    "totalMoves": 9,
+    "blocked": false,
+    "path": [
+      {
+        "start": "0,0",
+        "end": "10,0",
+        "pathArray": [
+          "f1",
+          2,
+          2,
+          2,
+          "u",
+          "8,0",
+          "u",
+          2,
+          2,
+          "r"
+        ],
+        "moves": 5,
+        "blocked": false
+      },
+      {
+        "start": "1,0",
+        "end": "10,0",
+        "pathArray": [
+          "f1",
+          2,
+          2,
+          "u",
+          "8,0",
+          "u",
+          2,
+          2,
+          "r"
+        ],
+        "moves": 4,
+        "blocked": false
+      }
+    ],
+    "mapid": -1,
+    "isChallenge": false,
+    "mapcodeExecuted": "11.1.0.dual_tp_sh...:,s1.,s2.1,t1.4,u1.1,f1.",
+    "usedSolution": "..:",
+    "best": 0,
+    "bestby": "no one"
+  }
+}

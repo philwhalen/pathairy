@@ -1,0 +1,30 @@
+{
+  "name": "z3_left",
+  "question": "z1-z4",
+  "code": "3.1.0.z3_left...:,f1.,z3.,s1.",
+  "solution": "..:",
+  "response": {
+    "totalMoves": 2,
+    "blocked": false,
+    "path": [
+      {
+        "start": "2,0",
+        "end": "0,0",
+        "pathArray": [
+          "f1",
+          4,
+          4,
+          "r"
+        ],
+        "moves": 2,
+        "blocked": false
+      }
+    ],
+    "mapid": -1,
+    "isChallenge": false,
+    "mapcodeExecuted": "3.1.0.z3_left...:,f1.,z3.,s1.",
+    "usedSolution": "..:",
+    "best": 0,
+    "bestby": "no one"
+  }
+}

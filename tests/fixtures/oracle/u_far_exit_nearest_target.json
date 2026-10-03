@@ -1,0 +1,34 @@
+{
+  "name": "u_far_exit_nearest_target",
+  "question": "several uN exits",
+  "code": "10.1.0.u_far_exit...:,s1.,t1.1,u1.3,u1.1,f1.",
+  "solution": "..:",
+  "response": {
+    "totalMoves": 3,
+    "blocked": false,
+    "path": [
+      {
+        "start": "0,0",
+        "end": "9,0",
+        "pathArray": [
+          "f1",
+          2,
+          "u",
+          "7,0",
+          "u",
+          2,
+          2,
+          "r"
+        ],
+        "moves": 3,
+        "blocked": false
+      }
+    ],
+    "mapid": -1,
+    "isChallenge": false,
+    "mapcodeExecuted": "10.1.0.u_far_exit...:,s1.,t1.1,u1.3,u1.1,f1.",
+    "usedSolution": "..:",
+    "best": 0,
+    "bestby": "no one"
+  }
+}

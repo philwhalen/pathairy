@@ -1,0 +1,32 @@
+{
+  "name": "cp_gap_c1_c3",
+  "question": "missing checkpoint numbers",
+  "code": "9.4.0.cp_gap_c1_...:,s1.1,c1.5,f1.24,c3.",
+  "solution": "..:",
+  "response": {
+    "totalMoves": 0,
+    "blocked": true,
+    "path": [
+      {
+        "start": "0,0",
+        "end": "7,3",
+        "blocked": true,
+        "lastTarget": {
+          "c": 2
+        },
+        "pathArray": [
+          "c1",
+          2,
+          2,
+          "r",
+          "c2"
+        ],
+        "moves": 0
+      }
+    ],
+    "mapid": -1,
+    "isChallenge": false,
+    "mapcodeExecuted": "9.4.0.cp_gap_c1_...:,s1.1,c1.5,f1.24,c3.",
+    "usedSolution": "..:"
+  }
+}

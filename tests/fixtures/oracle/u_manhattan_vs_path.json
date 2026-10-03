@@ -1,0 +1,37 @@
+{
+  "name": "u_manhattan_vs_path",
+  "question": "several uN exits",
+  "code": "7.3.0.u_manhatta...:,s1.,t1.2,u1.,r1.,f1.,r1.4,r1.4,u1.",
+  "solution": "..:",
+  "response": {
+    "totalMoves": 6,
+    "blocked": false,
+    "path": [
+      {
+        "start": "0,0",
+        "end": "6,0",
+        "pathArray": [
+          "f1",
+          2,
+          "u",
+          "3,2",
+          "u",
+          2,
+          2,
+          2,
+          1,
+          1,
+          "r"
+        ],
+        "moves": 6,
+        "blocked": false
+      }
+    ],
+    "mapid": -1,
+    "isChallenge": false,
+    "mapcodeExecuted": "7.3.0.u_manhatta...:,s1.,t1.2,u1.,r1.,f1.,r1.4,r1.4,u1.",
+    "usedSolution": "..:",
+    "best": 0,
+    "bestby": "no one"
+  }
+}

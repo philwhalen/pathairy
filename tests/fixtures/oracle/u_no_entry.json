@@ -1,0 +1,33 @@
+{
+  "name": "u_no_entry",
+  "question": "teleport edge cases",
+  "code": "6.1.0.u_no_entry...:,s1.1,u1.2,f1.",
+  "solution": "..:",
+  "response": {
+    "totalMoves": 5,
+    "blocked": false,
+    "path": [
+      {
+        "start": "0,0",
+        "end": "5,0",
+        "pathArray": [
+          "f1",
+          2,
+          2,
+          2,
+          2,
+          2,
+          "r"
+        ],
+        "moves": 5,
+        "blocked": false
+      }
+    ],
+    "mapid": -1,
+    "isChallenge": false,
+    "mapcodeExecuted": "6.1.0.u_no_entry...:,s1.1,u1.2,f1.",
+    "usedSolution": "..:",
+    "best": 0,
+    "bestby": "no one"
+  }
+}

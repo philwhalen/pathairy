@@ -1,0 +1,39 @@
+{
+  "name": "u_two_numbers_two_exits",
+  "question": "several uN exits",
+  "code": "12.1.0.u_two_numb...:,s1.,t1.2,u1.1,t2.2,u2.1,f1.",
+  "solution": "..:",
+  "response": {
+    "totalMoves": 5,
+    "blocked": false,
+    "path": [
+      {
+        "start": "0,0",
+        "end": "11,0",
+        "pathArray": [
+          "f1",
+          2,
+          "u",
+          "4,0",
+          "u",
+          2,
+          2,
+          "u",
+          "9,0",
+          "u",
+          2,
+          2,
+          "r"
+        ],
+        "moves": 5,
+        "blocked": false
+      }
+    ],
+    "mapid": -1,
+    "isChallenge": false,
+    "mapcodeExecuted": "12.1.0.u_two_numb...:,s1.,t1.2,u1.1,t2.2,u2.1,f1.",
+    "usedSolution": "..:",
+    "best": 0,
+    "bestby": "no one"
+  }
+}
