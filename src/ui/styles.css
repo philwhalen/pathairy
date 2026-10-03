@@ -1,0 +1,707 @@
+/*
+ * Look: a game board sitting on cool concrete. Tiles are drawn like enamel signage (flat color,
+ * crisp shapes); player walls are the boldest element. One condensed face (Bahnschrift / DIN)
+ * for everything, with tabular numerals for the counters.
+ */
+
+:root {
+  --concrete: #d3dae0;
+  --concrete-deep: #c2cbd3;
+  --line: #b9c3cc;
+  --open: #f4f7f9;
+  --ink: #1c2a39;
+  --ink-soft: #4d5c6b;
+  --stone: #8b96a2;
+  --stone-dark: #6c7884;
+  --green: #1d9550;
+  --green-deep: #137a3f;
+  --red: #d1263e;
+  --ice: #cfe8f6;
+  --used: #dddddd;
+  --gutter: 16px;
+  --board-pad: 6px;
+  --face:
+    Bahnschrift, 'DIN Alternate', 'DIN 2014', 'Barlow', 'Roboto Condensed', 'Arial Narrow',
+    system-ui, sans-serif;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--concrete);
+  color: var(--ink);
+  font-family: var(--face);
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+#app {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 12px var(--gutter) 32px;
+}
+
+/* Header */
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--concrete-deep);
+}
+
+.brand {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  font-stretch: condensed;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.new-map,
+.map-id,
+.seed {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.map-id {
+  margin-left: auto;
+}
+
+.new-map-label,
+.seed-label {
+  color: var(--ink-soft);
+  font-size: 14px;
+  margin-right: 2px;
+}
+
+.chip {
+  appearance: none;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 15px;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.chip:hover:not(:disabled) {
+  background: rgb(28 42 57 / 0.08);
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--ink);
+  color: #fff;
+}
+
+.chip:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.seed-type {
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.seed-input {
+  width: 8ch;
+  padding: 4px 6px;
+  border: 1.5px solid var(--line);
+  border-radius: 6px;
+  background: var(--open);
+  font-variant-numeric: tabular-nums;
+}
+
+.seed-input:focus {
+  border-color: var(--ink);
+  outline: none;
+}
+
+/* Status strip */
+
+.play {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hud {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 8px;
+  padding: 18px 0 10px;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.stat {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 6px;
+  font-size: 15px;
+  color: var(--ink-soft);
+}
+
+.stat strong {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.stat.best {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.stat.best .link {
+  flex-basis: 100%;
+}
+
+.stat.walls.empty strong {
+  color: var(--red);
+}
+
+.stat.walls.flash {
+  animation: flash-walls 0.7s ease-out;
+}
+
+@keyframes flash-walls {
+  0%,
+  40% {
+    color: var(--red);
+    transform: scale(1.08);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+.link {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: none;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.moves {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  font-stretch: semi-condensed;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+
+.moves .total,
+.moves .green,
+.moves .red {
+  font-size: clamp(30px, 9vw, 46px);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.moves .green {
+  color: var(--green);
+}
+
+.moves .red {
+  color: var(--red);
+}
+
+.moves .op {
+  font-size: 22px;
+  color: var(--ink-soft);
+}
+
+.moves .unit {
+  font-size: 15px;
+  color: var(--ink-soft);
+}
+
+.moves.stale {
+  opacity: 0.45;
+}
+
+.moves.pulse {
+  animation: pulse 0.6s ease-out;
+}
+
+@keyframes pulse {
+  30% {
+    transform: scale(1.12);
+  }
+}
+
+/* Board */
+
+.board-slot {
+  max-width: 100%;
+}
+
+.board {
+  /* Cells shrink to fit narrow screens (--cols is set by board.ts). */
+  --cell: min(35px, calc((100vw - 2 * var(--gutter) - 2 * var(--board-pad)) / var(--cols) - 1px));
+  display: grid;
+  gap: 1px;
+  padding: var(--board-pad);
+  background: var(--line);
+  border-radius: 10px;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.5),
+    0 14px 28px -16px rgb(28 42 57 / 0.55);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.board-row {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--cell));
+  gap: 1px;
+}
+
+.cell {
+  position: relative;
+  width: var(--cell);
+  height: var(--cell);
+  display: grid;
+  place-items: center;
+  background: var(--open);
+  font-size: calc(var(--cell) * 0.5);
+  font-weight: 700;
+  line-height: 1;
+  overflow: hidden;
+}
+
+.cell:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: -2px;
+  z-index: 3;
+}
+
+.cell.buildable {
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .cell.buildable:not(.wall):hover {
+    background: #e3e9ee;
+  }
+}
+
+/* Player wall: the boldest thing on the board. */
+.cell.wall::before {
+  content: '';
+  position: absolute;
+  inset: 3%;
+  border-radius: 14%;
+  background: var(--ink);
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.16),
+    inset 0 -2px 0 rgb(0 0 0 / 0.3);
+}
+
+.cell.wall.pop::before {
+  animation: pop 0.16s ease-out;
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.6);
+  }
+}
+
+.cell.nope {
+  animation: nope 0.3s ease-in-out;
+}
+
+@keyframes nope {
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(3px);
+  }
+}
+
+/* Rocks: a stone block; border rocks (r3) are flatter, darker and hatched. */
+.t-r1::before {
+  content: '';
+  position: absolute;
+  inset: 9%;
+  border-radius: 32%;
+  background: linear-gradient(150deg, #aeb7c0, var(--stone) 55%, var(--stone-dark));
+  box-shadow: inset 0 -2px 0 rgb(0 0 0 / 0.18);
+}
+
+.cell.t-r3 {
+  background: repeating-linear-gradient(-45deg, var(--stone-dark) 0 3px, #78838e 3px 6px);
+}
+
+/* Start: a solid green (or red) tile with a chevron. */
+.t-s1,
+.t-s2 {
+  background: var(--green);
+}
+
+.t-s2 {
+  background: var(--red);
+}
+
+.cell svg {
+  width: 62%;
+  height: 62%;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Finish: checkered flag. */
+.cell.t-f {
+  background: repeating-conic-gradient(var(--ink) 0 25%, #fff 0 50%) 0 0 / 50% 50%;
+}
+
+/* Checkpoints: a disc in the target color with its letter. */
+.t-c::before {
+  content: '';
+  position: absolute;
+  inset: 6%;
+  border-radius: 50%;
+  background: var(--tile);
+  box-shadow: inset 0 0 0 1.5px rgb(28 42 57 / 0.35);
+}
+
+.glyph {
+  position: relative;
+  z-index: 1;
+}
+
+/* Teleports: entrance is a dark portal ringed in the pair's color; exit is a diamond outline. */
+.t-t::before {
+  content: '';
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: inset 0 0 0 3px var(--tile);
+}
+
+.t-t .glyph {
+  color: #fff;
+}
+
+.t-u::before {
+  content: '';
+  position: absolute;
+  inset: 17%;
+  transform: rotate(45deg);
+  border: 2.5px solid var(--tile);
+  border-radius: 3px;
+  background: #fff;
+}
+
+.t-u .glyph {
+  color: var(--tile);
+  font-size: 0.85em;
+}
+
+/* Ice: pale blue with a sheen. */
+.cell.t-ice {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      transparent 0 5px,
+      rgb(255 255 255 / 0.75) 5px 6.5px,
+      transparent 6.5px 11px
+    ),
+    linear-gradient(135deg, #e4f3fb, #b5daf0);
+}
+
+/* Unbuildable: dotted. */
+.cell.t-p {
+  background: radial-gradient(circle, #aab5bf 1px, transparent 1.6px) 0 0 / 6px 6px var(--open);
+}
+
+/* Single-path rocks: a barrier striped in the color of the path it blocks. */
+.cell.t-x1 {
+  background: repeating-linear-gradient(45deg, var(--green) 0 4px, var(--open) 4px 8px);
+}
+
+.cell.t-x2 {
+  background: repeating-linear-gradient(45deg, var(--red) 0 4px, var(--open) 4px 8px);
+}
+
+/* Reached targets and used teleports are greyed until the run ends. */
+.cell.used::before {
+  background: var(--used);
+  box-shadow: none;
+}
+
+.cell.used {
+  color: #9aa3ab;
+}
+
+.cell.used.t-s1,
+.cell.used.t-s2,
+.cell.used.t-f {
+  background: var(--used);
+}
+
+.cell.flash {
+  animation: tp-flash 0.9s ease-out;
+}
+
+@keyframes tp-flash {
+  0%,
+  30% {
+    box-shadow: inset 0 0 0 calc(var(--cell) / 2) var(--flash);
+  }
+}
+
+/* Path trail: one layer per path. Appears at once, then fades. */
+.fx {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--trail);
+  opacity: 0;
+  transition: opacity 0.6s ease-out;
+  pointer-events: none;
+}
+
+.fx.on {
+  opacity: 0.9;
+  transition: none;
+}
+
+.fx::after {
+  content: '';
+  position: absolute;
+  inset: 30%;
+  background: var(--ink);
+  clip-path: polygon(15% 0, 100% 50%, 15% 100%, 40% 50%);
+}
+
+.fx2::after {
+  background: #7a1020;
+}
+
+.fx[data-dir='0']::after {
+  clip-path: circle(35%);
+}
+
+.fx[data-dir='1']::after {
+  transform: rotate(-90deg);
+}
+
+.fx[data-dir='3']::after {
+  transform: rotate(90deg);
+}
+
+.fx[data-dir='4']::after {
+  transform: rotate(180deg);
+}
+
+/* Message line */
+
+.message {
+  min-height: 1.5em;
+  margin: 12px 0 4px;
+  font-size: 17px;
+  text-align: center;
+}
+
+.message[data-tone='good'] {
+  color: var(--green-deep);
+  font-weight: 700;
+}
+
+.message[data-tone='warn'] {
+  color: var(--red);
+}
+
+.message.show {
+  animation: msg-in 0.25s ease-out;
+}
+
+@keyframes msg-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+/* Actions */
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 18px;
+  margin-top: 6px;
+}
+
+.go {
+  appearance: none;
+  min-width: 120px;
+  padding: 10px 28px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--green);
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: inset 0 -3px 0 var(--green-deep);
+}
+
+.go:hover {
+  background: #22a65a;
+}
+
+.go:active {
+  box-shadow: none;
+  transform: translateY(1px);
+}
+
+.go.running {
+  background: var(--ink);
+  box-shadow: inset 0 -3px 0 #0d1620;
+}
+
+.edit {
+  display: flex;
+  gap: 6px;
+}
+
+.speed {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.speed legend {
+  float: left;
+  margin-right: 8px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.speed label {
+  position: relative;
+  cursor: pointer;
+}
+
+.speed input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.speed span {
+  display: block;
+  padding: 4px 9px;
+  border: 1.5px solid var(--ink);
+  border-left-width: 0;
+  font-size: 15px;
+}
+
+.speed label:first-of-type span {
+  border-left-width: 1.5px;
+  border-radius: 6px 0 0 6px;
+}
+
+.speed label:last-of-type span {
+  border-radius: 0 6px 6px 0;
+}
+
+.speed input:checked + span {
+  background: var(--ink);
+  color: #fff;
+}
+
+.speed input:focus-visible + span {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+@media (max-width: 560px) {
+  .brand {
+    font-size: 26px;
+  }
+  .map-id {
+    margin-left: 0;
+  }
+  .new-map-label {
+    flex-basis: 100%;
+  }
+  .hud {
+    grid-template-columns: 1fr 1fr;
+  }
+  .hud .moves {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+  }
+  .fx {
+    transition-duration: 0.15s;
+  }
+}

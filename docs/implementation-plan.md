@@ -85,10 +85,11 @@ Each phase ends with its tests passing. Phases 1–3 involve no UI.
 - [x] Phase 3 — engine: 56/56 server fixtures exact, 602/602 scoreboard rows, 11k-case
       differential test vs analyst.js (Phase 2 step 3). Open rules isolated in
       `src/engine/rules.ts` (2026-10-03, commit 12c938f)
-- [~] Phase 4 — generator + genstats implemented (commit 12c938f). Open: Complex no-walls
-  median path 44 vs 54 in the 20 samples, and the site re-rolls ~15% of Complex/Centralized
-  maps vs ~0% locally, which hints at an extra site filter. Waiting on map review with Phil.
-- [ ] Phase 5 — UI (then playtest)
+- [~] Phase 4 — generator + genstats done (commits 12c938f, b3f6ab1). 100 more site samples
+  showed the Complex gap was noise (median 42 local vs 45 site); no extra site filter found.
+  Waiting on map review with Phil.
+- [~] Phase 5 — UI done: play loop on all 4 types, desktop + 375 px, checked in headless
+  Chrome. Not browser-tested yet: dual paths, ice, x tiles. Waiting on playtest with Phil.
 - [ ] Phase 6 — persistence + polish
 - [ ] Phase 7 — solver (optional)
 
