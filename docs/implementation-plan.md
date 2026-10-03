@@ -91,7 +91,7 @@ Each phase ends with its tests passing. Phases 1–3 involve no UI.
 - [~] Phase 5 — UI done: play loop on all 4 types, desktop + 375 px, checked in headless
   Chrome. Not browser-tested yet: dual paths, ice, x tiles. Waiting on playtest with Phil.
 - [x] Phase 6 — mute/speed/last-map prefs, Web Audio blips (mutable), G/R/N/Ctrl+Z shortcuts,
-  Daily mode (`{type}-{seed}` key, seed hashed from local date + type), 2026-10-03
+      Daily mode (`{type}-{seed}` key, seed hashed from local date + type), 2026-10-03
 - [ ] Phase 7 — solver (optional)
 
 ### Phase 0: Scaffold
