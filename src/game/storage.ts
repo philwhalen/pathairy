@@ -6,6 +6,8 @@
  */
 import type { Speed } from '../ui/animate';
 import { isSpeed } from '../ui/animate';
+import { isSiteMapInfo } from './pathery';
+import type { SiteDay, SiteMapInfo } from './pathery';
 
 export interface BestRecord {
   moves: number;
@@ -90,6 +92,29 @@ export class GameStorage {
 
   setPrefs(update: Partial<Prefs>): void {
     this.write('prefs', JSON.stringify({ ...this.getPrefs(), ...update }));
+  }
+
+  /** A map downloaded from pathery.com, kept so it plays offline and from links. */
+  getSiteMap(id: number): SiteMapInfo | null {
+    const v = this.readJson(`site.map.${id}`);
+    return isSiteMapInfo(v) && v.id === id ? v : null;
+  }
+
+  /** pathery.com's maps for `date`, if every one of them was saved. */
+  getSiteDay(date: string): SiteDay | null {
+    const ids = this.readJson(`site.day.${date}`);
+    if (!Array.isArray(ids) || ids.length === 0) return null;
+    const maps = ids.map((id) => (Number.isSafeInteger(id) ? this.getSiteMap(id as number) : null));
+    return maps.every((m) => m !== null) ? { date, maps: maps as SiteMapInfo[] } : null;
+  }
+
+  putSiteMap(info: SiteMapInfo): void {
+    this.write(`site.map.${info.id}`, JSON.stringify(info));
+  }
+
+  putSiteDay(day: SiteDay): void {
+    for (const m of day.maps) this.putSiteMap(m);
+    this.write(`site.day.${day.date}`, JSON.stringify(day.maps.map((m) => m.id)));
   }
 
   private readJson(key: string): unknown {

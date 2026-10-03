@@ -4,3 +4,5 @@ coverage
 *.log
 # unlicensed third-party file, kept locally only (npm run oracle:fetch)
 tools/oracle/analyst.js
+# maps downloaded from pathery.com by the dev server (tools/pathery-site.ts)
+.cache

@@ -727,6 +727,23 @@ input {
   margin-left: 8px;
 }
 
+.chip.site[aria-busy='true'] {
+  cursor: progress;
+}
+
+/* pathery.com's maps for the day, under the header row. */
+.site-maps {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.site-maps[hidden] {
+  display: none;
+}
+
 .hint {
   margin: 2px 0 0;
   text-align: center;

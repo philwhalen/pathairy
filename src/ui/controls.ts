@@ -20,6 +20,10 @@ export interface ControlHandlers {
   loadBest(): void;
   daily(): void;
   setMute(mute: boolean): void;
+  /** Download (or reuse) pathery.com's maps for today. */
+  siteToday(): void;
+  /** Load one of the pathery.com maps listed by `setSiteMaps`. */
+  openSiteMap(id: number): void;
 }
 
 export type Tone = 'info' | 'good' | 'warn';
@@ -49,6 +53,12 @@ export class Controls {
   private readonly typePrefix: HTMLElement;
   private readonly seedInput: HTMLInputElement;
   private readonly dailyTag: HTMLElement;
+  private readonly siteBtn: HTMLButtonElement;
+  private readonly siteRow: HTMLElement;
+  private readonly siteLabel: HTMLElement;
+  private readonly siteChips = new Map<number, HTMLButtonElement>();
+  /** What the seed field shows for the current map (restored after bad input). */
+  private seedValue = '';
   private readonly wallsCount: HTMLElement;
   private readonly wallsBudget: HTMLElement;
   private readonly wallsBox: HTMLElement;
@@ -62,8 +72,10 @@ export class Controls {
   private readonly speedInputs = new Map<Speed, HTMLInputElement>();
   private readonly message: HTMLElement;
   private messageTimer = 0;
+  private readonly handlers: ControlHandlers;
 
   constructor(root: HTMLElement, h: ControlHandlers, speed: Speed, muted: boolean) {
+    this.handlers = h;
     // Header
     const brand = el('h1', { className: 'brand' }, 'Pathery');
     const typeNav = el('div', { className: 'new-map' });
@@ -85,6 +97,15 @@ export class Controls {
     dailyBtn.title = "Today's map for this type (same for everyone, one per day)";
     dailyBtn.addEventListener('click', () => h.daily());
     typeNav.append(dailyBtn);
+
+    this.siteBtn = el('button', {
+      type: 'button',
+      className: 'chip site',
+      textContent: 'pathery.com',
+    });
+    this.siteBtn.title = "Download today's maps from pathery.com";
+    this.siteBtn.addEventListener('click', () => h.siteToday());
+    typeNav.append(this.siteBtn);
 
     this.typePrefix = el('span', { className: 'seed-type' });
     this.dailyTag = el('span', { className: 'daily-tag', textContent: 'Daily' });
@@ -112,12 +133,18 @@ export class Controls {
     const copyBtn = el('button', { type: 'button', className: 'chip', textContent: 'Copy link' });
     copyBtn.addEventListener('click', () => h.copyLink());
 
+    this.siteLabel = el('span', { className: 'new-map-label' });
+    this.siteRow = el('nav', { className: 'site-maps' }, this.siteLabel);
+    this.siteRow.setAttribute('aria-label', "pathery.com's maps");
+    this.siteRow.hidden = true;
+
     const header = el(
       'header',
       { className: 'top' },
       brand,
       typeNav,
       el('div', { className: 'map-id' }, seedForm, copyBtn),
+      this.siteRow,
     );
 
     // Status strip
@@ -218,9 +245,61 @@ export class Controls {
 
   setMap(type: MapType, seed: number, daily = false): void {
     for (const [t, b] of this.typeButtons) b.setAttribute('aria-pressed', String(t === type));
-    this.typePrefix.textContent = `${type}-`;
-    this.dailyTag.hidden = !daily;
-    this.seedInput.value = String(seed);
+    this.showKey(`${type}-`, String(seed), daily ? 'Daily' : null);
+    this.markSiteMap(null);
+  }
+
+  /** A map from pathery.com: `pathery-{id}`, tagged with the site's name for it. */
+  setSiteMap(id: number, name: string): void {
+    for (const b of this.typeButtons.values()) b.setAttribute('aria-pressed', 'false');
+    this.showKey('pathery-', String(id), name || 'pathery.com');
+    this.markSiteMap(id);
+  }
+
+  /** Puts the seed field back to the current map's value (after input that wasn't loaded). */
+  resetSeed(): void {
+    this.seedInput.value = this.seedValue;
+  }
+
+  /** Lists a day of pathery.com maps under the header; `current` is marked. */
+  setSiteMaps(
+    date: string,
+    maps: readonly { id: number; name: string }[],
+    current: number | null,
+  ): void {
+    for (const b of this.siteChips.values()) b.remove();
+    this.siteChips.clear();
+    this.siteLabel.textContent = `pathery.com ${date}`;
+    for (const m of maps) {
+      const b = el('button', {
+        type: 'button',
+        className: 'chip',
+        textContent: m.name || `#${m.id}`,
+      });
+      b.title = `pathery-${m.id}`;
+      b.addEventListener('click', () => this.handlers.openSiteMap(m.id));
+      this.siteChips.set(m.id, b);
+      this.siteRow.append(b);
+    }
+    this.siteRow.hidden = maps.length === 0;
+    this.markSiteMap(current);
+  }
+
+  setSiteBusy(busy: boolean): void {
+    this.siteBtn.disabled = busy;
+    this.siteBtn.setAttribute('aria-busy', String(busy));
+  }
+
+  private showKey(prefix: string, value: string, tag: string | null): void {
+    this.typePrefix.textContent = prefix;
+    this.dailyTag.hidden = tag === null;
+    this.dailyTag.textContent = tag ?? '';
+    this.seedValue = value;
+    this.seedInput.value = value;
+  }
+
+  private markSiteMap(id: number | null): void {
+    for (const [i, b] of this.siteChips) b.setAttribute('aria-pressed', String(i === id));
   }
 
   setWalls(left: number, budget: number): void {

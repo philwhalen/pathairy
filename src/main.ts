@@ -4,11 +4,20 @@
  */
 import './ui/styles.css';
 import { computePaths } from './engine/pathing';
-import { parseSolution } from './engine/mapcode';
-import type { Coord, PathsResult } from './engine/types';
-import { generateMap, parseMapKey, randomSeed } from './generator/generate';
+import { parseMapCode, parseSolution } from './engine/mapcode';
+import type { Coord, MapData, PathsResult } from './engine/types';
+import { generateMap, mapKey, parseMapKey, randomSeed } from './generator/generate';
 import type { GeneratedMap, MapType } from './generator/generate';
 import { dailySeed, dateString, isDaily } from './game/daily';
+import {
+  fetchSiteDay,
+  fetchSiteMap,
+  parseSiteMapKey,
+  patheryDate,
+  SiteError,
+  siteMapKey,
+} from './game/pathery';
+import type { SiteMapInfo } from './game/pathery';
 import { GameState } from './game/state';
 import { GameStorage } from './game/storage';
 import type { RunVerdict } from './game/storage';
@@ -25,7 +34,10 @@ const FLASH_MS = 2200;
 const storage = new GameStorage();
 let speed: Speed = storage.getPrefs().speed;
 const sound = new Sound(storage.getPrefs().mute);
-let current: GeneratedMap;
+/** The map on the board: generated (`site` null) or downloaded from pathery.com. */
+let current: { key: string; site: SiteMapInfo | null };
+/** The generator type that Daily, N and bare seed numbers use (kept while a site map is shown). */
+let mapType: MapType = DEFAULT_TYPE;
 let game: GameState;
 /** The last run's per-path moves, shown (dimmed) until the next run. */
 let lastMoves: number[] | null = null;
@@ -66,6 +78,8 @@ const controls = new Controls(
       sound.unlock();
       sound.play('tick');
     },
+    siteToday: () => void actions.siteToday(),
+    openSiteMap: (id) => void actions.openSiteMap(id),
   },
   speed,
   sound.muted,
@@ -113,24 +127,47 @@ function sameWalls(solution: string): boolean {
 }
 
 function load(g: GeneratedMap): void {
-  player.cancel();
-  current = g;
-  game = new GameState(g.map, g.key);
-  lastMoves = null;
-  board.render(g.map);
+  mapType = g.type;
+  show(g.key, g.map, null);
   controls.setMap(g.type, g.seed, isDaily(g.type, g.seed));
+}
+
+/** Loads a pathery.com map; returns false (with a message) if its code doesn't parse. */
+function loadSite(info: SiteMapInfo): boolean {
+  let map: MapData;
+  try {
+    map = parseMapCode(info.code);
+  } catch (e) {
+    controls.say(`Couldn't read pathery.com map ${info.id}: ${String(e)}`, 'warn');
+    return false;
+  }
+  show(siteMapKey(info.id), map, info);
+  controls.setSiteMap(info.id, info.name);
+  return true;
+}
+
+function show(key: string, map: MapData, site: SiteMapInfo | null): void {
+  player.cancel();
+  current = { key, site };
+  game = new GameState(map, key);
+  lastMoves = null;
+  board.render(map);
   controls.setRunning(false);
   controls.setMoves(null);
   controls.say('');
   refresh();
-  storage.setPrefs({ lastMap: g.key });
+  storage.setPrefs({ lastMap: key });
   try {
     const url = new URL(window.location.href);
-    url.searchParams.set('map', g.key);
+    url.searchParams.set('map', key);
     window.history.replaceState(null, '', url);
   } catch {
     // Some embedded contexts refuse history changes; the link button still works.
   }
+}
+
+function siteErrorText(e: unknown): string {
+  return e instanceof SiteError ? e.message : `Download failed: ${String(e)}`;
 }
 
 /** Generates and loads a map; returns false (with a message) if that fails. */
@@ -171,25 +208,84 @@ const actions = {
 
   /** Today's map of the current type. */
   daily(): void {
-    const seed = dailySeed(current.type, dateString());
-    if (current.seed === seed) {
+    const seed = dailySeed(mapType, dateString());
+    if (current.key === mapKey(mapType, seed)) {
       controls.say("That's already today's map.", 'info', FLASH_MS);
       return;
     }
-    loadByKey(current.type, seed);
+    loadByKey(mapType, seed);
   },
 
   loadKey(text: string): void {
     const t = text.trim();
-    const key = /^\d+$/.test(t) ? `${current.type}-${t}` : t;
-    const parsed = parseMapKey(key);
-    if (!parsed) {
-      controls.say('Enter a seed number, or a map key like complex-123456.', 'warn', FLASH_MS);
-      controls.setMap(current.type, current.seed);
+    // A bare number is a seed of the current type, or a pathery.com ID while one of those is shown.
+    const key = /^\d+$/.test(t) ? `${current.site ? 'pathery' : mapType}-${t}` : t;
+    const siteId = parseSiteMapKey(key);
+    if (siteId !== null) {
+      if (current.site?.id !== siteId) void actions.openSiteMap(siteId);
       return;
     }
-    if (parsed.type === current.type && parsed.seed === current.seed) return;
+    const parsed = parseMapKey(key);
+    if (!parsed) {
+      controls.say(
+        'Enter a seed number, or a map key like complex-123456 or pathery-23445.',
+        'warn',
+        FLASH_MS,
+      );
+      controls.resetSeed();
+      return;
+    }
+    if (current.key === mapKey(parsed.type, parsed.seed)) return;
     loadByKey(parsed.type, parsed.seed);
+  },
+
+  /**
+   * Lists pathery.com's maps for today (downloading them the first time) and, unless one of them
+   * is already on the board, loads the one named like the current type (else the first).
+   */
+  async siteToday(): Promise<void> {
+    let day = storage.getSiteDay(patheryDate());
+    if (!day) {
+      controls.setSiteBusy(true);
+      controls.say("Checking pathery.com for today's maps…");
+      try {
+        day = await fetchSiteDay();
+      } catch (e) {
+        controls.say(siteErrorText(e), 'warn');
+        return;
+      } finally {
+        controls.setSiteBusy(false);
+      }
+      if (day.maps.length === 0) {
+        controls.say(`pathery.com hasn't posted maps for ${day.date} yet.`, 'info');
+        return;
+      }
+      storage.putSiteDay(day);
+    }
+    controls.setSiteMaps(day.date, day.maps, current.site?.id ?? null);
+    if (day.maps.some((m) => m.id === current.site?.id)) {
+      controls.say(`pathery.com maps for ${day.date}.`, 'info', FLASH_MS);
+      return;
+    }
+    const pick = day.maps.find((m) => m.name.toLowerCase() === mapType) ?? day.maps[0]!;
+    loadSite(pick);
+  },
+
+  /** Loads pathery.com map `id`, from local storage or downloaded. */
+  async openSiteMap(id: number): Promise<boolean> {
+    let info = storage.getSiteMap(id);
+    if (!info) {
+      controls.say(`Downloading pathery-${id}…`);
+      try {
+        info = await fetchSiteMap(id);
+      } catch (e) {
+        controls.say(siteErrorText(e), 'warn');
+        controls.resetSeed();
+        return false;
+      }
+      storage.putSiteMap(info);
+    }
+    return loadSite(info);
   },
 
   async copyLink(): Promise<void> {
@@ -279,20 +375,33 @@ installShortcuts((a) => {
   if (a === 'go') actions.go();
   else if (a === 'reset') actions.reset();
   else if (a === 'undo') actions.undo();
-  else actions.newMap(current.type);
+  else actions.newMap(mapType);
 });
 
-// Startup: ?map= first, then the last map played, then a new map.
+/** Loads a generated map, or a pathery.com map saved locally, by key (no downloads). */
+function loadSaved(key: string): boolean {
+  const siteId = parseSiteMapKey(key);
+  const info = siteId === null ? null : storage.getSiteMap(siteId);
+  if (info) return loadSite(info);
+  const parsed = parseMapKey(key);
+  return !!parsed && loadByKey(parsed.type, parsed.seed);
+}
+
+// Startup: ?map= first, then the last map played, then a new map. A pathery.com map that isn't
+// saved yet is downloaded once something else is on the board. Today's pathery.com maps are
+// listed if they were downloaded earlier.
 function start(): void {
   const param = new URLSearchParams(window.location.search).get('map');
-  const fromUrl = param ? parseMapKey(param) : null;
-  if (fromUrl && loadByKey(fromUrl.type, fromUrl.seed)) return;
+  const today = storage.getSiteDay(patheryDate());
+  if (today) controls.setSiteMaps(today.date, today.maps, null);
+  if (param && loadSaved(param)) return;
   const last = storage.getPrefs().lastMap;
-  const fromPrefs = last ? parseMapKey(last) : null;
-  if (!(fromPrefs && loadByKey(fromPrefs.type, fromPrefs.seed))) {
-    loadByKey(DEFAULT_TYPE, randomSeed());
+  if (!(last && loadSaved(last))) loadByKey(DEFAULT_TYPE, randomSeed());
+  const siteId = param ? parseSiteMapKey(param) : null;
+  if (siteId !== null) void actions.openSiteMap(siteId);
+  else if (param && !parseMapKey(param)) {
+    controls.say(`"${param}" isn't a map key, so here's another map.`, 'warn');
   }
-  if (param && !fromUrl) controls.say(`"${param}" isn't a map key, so here's another map.`, 'warn');
 }
 
 start();
