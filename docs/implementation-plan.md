@@ -72,6 +72,26 @@ pathery/
 
 Each phase ends with its tests passing. Phases 1–3 involve no UI.
 
+**Progress log** (updated as work lands; resume from the first unchecked item):
+
+- [x] Phase 0 — scaffold (2026-10-03, commit 1e25ebc)
+- [x] Phase 1 — types + map code/solution round trips (2026-10-03, commit 1e25ebc)
+- [x] Phase 2 steps 1–2 — `tests/fixtures/scoreboard.json` (602 distinct rows), 20 oracle
+      fixtures, `tools/oracle/run-analyst.mjs` reproduces exact server tokens, `check-corpus.mjs`
+      all match (2026-10-03, commit 1e25ebc). `analyst.js` is gitignored: `npm run oracle:fetch`.
+- [x] Phase 2 step 4 — 36 probes sent (`tools/oracle/probes.json`, `record.ts`), fixtures in
+      `tests/fixtures/oracle/`, findings in report §9. analyst.js is wrong on checkpoint gaps,
+      `tN` without `uN`, and `z1` (2026-10-03, commit 316c83f)
+- [x] Phase 3 — engine: 56/56 server fixtures exact, 602/602 scoreboard rows, 11k-case
+      differential test vs analyst.js (Phase 2 step 3). Open rules isolated in
+      `src/engine/rules.ts` (2026-10-03, commit 12c938f)
+- [~] Phase 4 — generator + genstats implemented (commit 12c938f). Open: Complex no-walls
+      median path 44 vs 54 in the 20 samples, and the site re-rolls ~15% of Complex/Centralized
+      maps vs ~0% locally, which hints at an extra site filter. Waiting on map review with Phil.
+- [ ] Phase 5 — UI (then playtest)
+- [ ] Phase 6 — persistence + polish
+- [ ] Phase 7 — solver (optional)
+
 ### Phase 0: Scaffold
 
 - `npm create vite` (vanilla-ts), add Vitest and Prettier, `git init`, `.gitignore`.
@@ -268,7 +288,7 @@ It blocks exactly like r1, but the UI may draw it differently.
 | Left column (col 0)   | r3 in every row except one random row = `s1`         |
 | Right column (col 12) | r3 in every row except one random row = `f1`         |
 | Checkpoints           | exactly 1 (A), cols 2–9, any row                     |
-| Rocks (r1)            | 3–8 (avg 5), cols 1–11, any row including top/bottom |
+| Rocks (r1)            | 3–8 (avg 5), **cols 2–10**, any row incl. top/bottom |
 | Teleports / ice       | none                                                 |
 | Walls                 | 6, 7, 8 (20% / 40% / 40%)                            |
 
@@ -309,9 +329,17 @@ It blocks exactly like r1, but the UI may draw it differently.
 
 ### 6.5 Notes and how close is close enough
 
-- Rock counts land on a few fixed values (10/12/14, 11/14). The site likely places a fixed number
-  of rocks and drops any that land on an occupied cell. We can copy that ("attempt N
-  placements"), which also explains the occasional lower counts.
+- Rock counts land on a few fixed values (Normal 10/12/14, Complex 8/11/14; never 11/13 or
+  9/10/12/13). The "N attempts, drop collisions" idea was tested and **rejected**: with 14
+  attempts on ~150 cells a collision happens in ~45% of maps and would give 11/13 often. The
+  count is drawn from a small set (Simple uniform 3–8, Centralized uniform 16–20) and rocks go
+  on free cells. Walls, rocks, checkpoint and ice counts are independent of each other.
+- Checkpoints/teleports/ice can sit next to each other and next to start/finish; the observed
+  adjacency rate matches uniform random placement (ice tiles were 4-adjacent in 1 of 8 ice
+  maps, so "separate" is only a tendency). Header: `W.H.walls.Name...:` (name = type name,
+  three extra fields empty). The site's `numberOfAttempts` is > 1 in ~20% of samples: re-rolls
+  of blocked maps, like our validation loop.
+- Centralized checkpoints never landed in col 18 (60 sampled), so the preset uses cols 0–17.
 - 20 samples per type is small. Percentages above are rough. Fetch more samples if a
   histogram looks off (the endpoint is cheap, but keep it polite).
 - **Close enough:** local histograms fall inside the sampled ranges with similar shape, and the
