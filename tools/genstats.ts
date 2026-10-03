@@ -1,8 +1,8 @@
 /**
- * Generates N local maps per type and prints histograms next to the 80 sampled maps, plus the
+ * Generates N local maps per type and prints histograms next to the 80 sampled maps (all files in reference/original/api/gen), plus the
  * no-walls path length (local engine on both). Usage: npm run genstats [-- N]
  */
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { computePaths } from '../src/engine/pathing';
 import { mapJsonToMapData } from '../src/engine/mapcode';
 import type { MapData } from '../src/engine/types';
@@ -83,8 +83,9 @@ function printLenHist(local: number[], sample: number[]) {
 
 for (const type of MAP_TYPES) {
   const samples: Row[] = [];
-  for (let i = 1; i <= 20; i++) {
-    const file = new URL(`${type}_${String(i).padStart(2, '0')}.json`, GEN_DIR);
+  const names = readdirSync(GEN_DIR).filter((f) => f.startsWith(`${type}_`));
+  for (const name of names) {
+    const file = new URL(name, GEN_DIR);
     const json = JSON.parse(readFileSync(file, 'utf8'));
     samples.push(measure(mapJsonToMapData(json), json.debug?.numberOfAttempts ?? 1));
   }
@@ -95,7 +96,9 @@ for (const type of MAP_TYPES) {
     local.push(measure(g.map, g.attempts));
   }
   const ms = performance.now() - t0;
-  console.log(`===== ${type}  local n=${N} (${(ms / N).toFixed(2)} ms/map) vs samples n=20`);
+  console.log(
+    `===== ${type}  local n=${N} (${(ms / N).toFixed(2)} ms/map) vs samples n=${samples.length}`,
+  );
   for (const [label, key] of [
     ['rocks', 'rocks'],
     ['checkpts', 'cp'],

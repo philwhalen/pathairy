@@ -86,8 +86,8 @@ Each phase ends with its tests passing. Phases 1–3 involve no UI.
       differential test vs analyst.js (Phase 2 step 3). Open rules isolated in
       `src/engine/rules.ts` (2026-10-03, commit 12c938f)
 - [~] Phase 4 — generator + genstats implemented (commit 12c938f). Open: Complex no-walls
-      median path 44 vs 54 in the 20 samples, and the site re-rolls ~15% of Complex/Centralized
-      maps vs ~0% locally, which hints at an extra site filter. Waiting on map review with Phil.
+  median path 44 vs 54 in the 20 samples, and the site re-rolls ~15% of Complex/Centralized
+  maps vs ~0% locally, which hints at an extra site filter. Waiting on map review with Phil.
 - [ ] Phase 5 — UI (then playtest)
 - [ ] Phase 6 — persistence + polish
 - [ ] Phase 7 — solver (optional)
@@ -275,7 +275,7 @@ matched the move counts of **all 824** scoreboard solutions on 83 past daily map
 - **License:** the repo has no license, so use it only as a local test tool and don't copy its code
   into `src/`.
 
-## 6. Generator specifications (from 20 samples per type)
+## 6. Generator specifications (from 20 samples per type; 80 Complex, 60 Centralized)
 
 Samples: `reference/original/api/gen/{type}_NN.json`, fetched from `mapeditor?mapBySpecial={type}`.
 Coordinates below are (col, row). "r3" is the decorative rock variant the site uses for borders.
@@ -312,7 +312,7 @@ It blocks exactly like r1, but the UI may draw it differently.
 | Right column (col 18) | `f1` in all 9 rows                                               |
 | Checkpoints           | 3 (50%), 4 (20%), 5 (30%); cols 1–17                             |
 | Teleports             | 1 pair (75%) or 2 pairs (25%); `t` and `u` anywhere in cols 1–17 |
-| Ice (z5)              | 0 (60%), 3 (35%), 6 (5%); separate single tiles                  |
+| Ice (z5)              | 0 (68%), 3 (29%), 6 (4%); separate single tiles                  |
 | Rocks                 | mostly 11 or 14 (some 8); cols 1–17                              |
 | Walls                 | 15–22, roughly uniform                                           |
 
@@ -322,10 +322,10 @@ It blocks exactly like r1, but the UI may draw it differently.
 | --------------- | --------------------------------------------------- |
 | Borders         | none; the whole grid is open                        |
 | Start / finish  | single `s1` at (8,4), single `f1` at (10,4), always |
-| Checkpoints     | exactly 3 (A, B, C), anywhere                       |
+| Checkpoints     | exactly 3 (A, B, C), anywhere (col 18 too)          |
 | Rocks           | 16–20, anywhere, edges included                     |
 | Teleports / ice | none                                                |
-| Walls           | 16 (35%), 17 (40%), 19 (15%), 20 (10%)              |
+| Walls           | 16�20, roughly uniform (15/18/10/9/8 of 60)         |
 
 ### 6.5 Notes and how close is close enough
 
@@ -337,15 +337,27 @@ It blocks exactly like r1, but the UI may draw it differently.
 - Checkpoints/teleports/ice can sit next to each other and next to start/finish; the observed
   adjacency rate matches uniform random placement (ice tiles were 4-adjacent in 1 of 8 ice
   maps, so "separate" is only a tendency). Header: `W.H.walls.Name...:` (name = type name,
-  three extra fields empty). The site's `numberOfAttempts` is > 1 in ~20% of samples: re-rolls
-  of blocked maps, like our validation loop.
+  three extra fields empty).
+- **`numberOfAttempts` and the "path too short" worry (investigated with 100 extra requests):**
+  the first-20 gap (Complex median 44 local vs 54 sampled) was small-sample noise. With 80 Complex
+  samples the no-walls length is median 45 / mean 45.0 vs local 44 / 45.0 (3000 maps); Centralized
+  (60) median 32 / mean 34.9 vs local 32 / 33.7. Per checkpoint count, teleport-pair count,
+  checkpoint col/row, start/finish distance, consecutive-checkpoint distance and teleport
+  entrance-exit/nearest-feature distance, samples and local maps agree. The teleport entrance is on
+  the no-walls path in only 13% of samples (9% local), so "teleport must be used" is not a rule.
+  So there is no length or placement filter. `numberOfAttempts` > 1 is 17.5% of Complex (14/80),
+  11.7% of Centralized (7/60), 10% of Normal (2/20), 0% of Simple (0/20), whereas blocked maps are
+  essentially never produced locally (<0.1%). Attempt-count lengths (2 or 3) do not correlate with
+  path length. A simulation of "re-roll when a checkpoint/teleport/ice item lands on an occupied
+  cell" gives 16.4% Complex, 5.5% Centralized, 0.7% Normal, 0% Simple, which fits Complex and Simple
+  but is a weak fit for Centralized and Normal; the accepted maps would be indistinguishable from
+  ours either way. We therefore keep the blocked-only re-roll; `attempts` is cosmetic.
 - Centralized checkpoints never landed in col 18 (60 sampled), so the preset uses cols 0–17.
 - 20 samples per type is small. Percentages above are rough. Fetch more samples if a
   histogram looks off (the endpoint is cheap, but keep it polite).
 - **Close enough:** local histograms fall inside the sampled ranges with similar shape, and the
   median no-walls path length is within ~10% of the samples'. Final check is playing them.
-- Unknown: whether the site rejects maps for being too easy or hard (e.g. path length limits).
-  The no-walls path length comparison in Phase 4 will show whether we need such a filter.
+- Resolved: the site does not appear to reject maps for being too easy or hard (see above).
 
 ## 7. Risks
 

@@ -1,5 +1,6 @@
 /**
- * Per-type generator parameters, derived from 20 sampled maps per type (plan section 6).
+ * Per-type generator parameters, derived from sampled maps (plan section 6): 20 per type, 80 for
+ * Complex and 60 for Centralized.
  * All counts are drawn independently (walls and rocks are uncorrelated in the samples).
  */
 
@@ -105,32 +106,34 @@ export const PRESETS: Record<MapType, Preset> = {
     layout: { kind: 'edges', left: 'all', right: 'all' },
     checkpoints: {
       count: w([
-        [3, 50],
-        [4, 20],
-        [5, 30],
+        [3, 48],
+        [4, 15],
+        [5, 17],
       ]),
       region: { col0: 1, col1: 17, row0: 0, row1: 8 },
     },
     teleports: {
       pairs: w([
-        [1, 75],
-        [2, 25],
+        [1, 54],
+        [2, 26],
       ]),
       region: { col0: 1, col1: 17, row0: 0, row1: 8 },
     },
     ice: {
       count: w([
-        [0, 60],
-        [3, 35],
-        [6, 5],
+        [0, 54],
+        [3, 23],
+        [6, 3],
       ]),
       region: { col0: 1, col1: 17, row0: 0, row1: 8 },
     },
     rocks: {
       count: w([
-        [8, 10],
-        [11, 45],
-        [14, 45],
+        [5, 2],
+        [8, 14],
+        [11, 42],
+        [14, 20],
+        [17, 2],
       ]),
       region: { col0: 1, col1: 17, row0: 0, row1: 8 },
     },
@@ -141,14 +144,9 @@ export const PRESETS: Record<MapType, Preset> = {
     width: 19,
     height: 9,
     layout: { kind: 'fixed', start: { row: 4, col: 8 }, finish: { row: 4, col: 10 } },
-    // Checkpoints never landed in col 18 (60 sampled); rocks use the whole grid.
-    checkpoints: { count: w([[3, 1]]), region: { col0: 0, col1: 17, row0: 0, row1: 8 } },
+    // Checkpoints and rocks use the whole grid (col 18 included: 11 of 60 sampled maps).
+    checkpoints: { count: w([[3, 1]]), region: { col0: 0, col1: 18, row0: 0, row1: 8 } },
     rocks: { count: uniform(16, 20), region: { col0: 0, col1: 18, row0: 0, row1: 8 } },
-    walls: w([
-      [16, 35],
-      [17, 40],
-      [19, 15],
-      [20, 10],
-    ]),
+    walls: uniform(16, 20),
   },
 };
