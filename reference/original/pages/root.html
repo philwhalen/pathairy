@@ -1,0 +1,426 @@
+
+<!DOCTYPE html>
+<html xml:lang='en' lang='en'>
+<head>
+	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+	<title>Pathery</title>
+
+	<link href='css/page.css?v=050513.css' rel='stylesheet' type='text/css' />
+	<link href='css/maps.css?v=20180724.css' rel='stylesheet' type='text/css' />
+	<link rel="image_src" type="image/png" href="/images/linkdsp.png" />
+	<link rel="icon" href="/favicon.ico" type="image/x-icon"/>
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+		<link href="css/tutorial.css?v=20180724.css" rel="stylesheet" type="text/css" />
+
+	<script src="js/ajax.js" async="async"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<meta name='Description' content='Start Here - Pathery Tutorial'><script src='js/globe.js?v=20180724.js'></script><script src='js/mapspecs.js?v=20180724.js'></script><script src='js/scores.js?v=20180724.js'></script><script src='js/dateformat.js?v=20180724.js'></script>
+	<script>
+	(function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");b.type="text/javascript";b.async=!0;b.src=("https:"===c.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.1.min.js';d=c.getElementsByTagName("script")[0];d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?
+	g=a[f]=[]:f="mixpanel";g.people=g.people||[];h="disable track track_pageview track_links track_forms register register_once unregister identify name_tag set_config people.identify people.set people.increment".split(" ");for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.1})(document,window.mixpanel||[]);
+	mixpanel.init("24743c6567f831ddfcbbbd3f397e11e4");
+
+	
+    </script>
+
+<script>
+function showSignin() {
+	if (typeof document.getElementById('oid_hidden') !== 'undefined') {
+		document.getElementById('oid_hidden').id = 'oid_wrapper';
+	}
+}
+function hideSignin() {
+	if (typeof document.getElementById('oid_wrapper') !== 'undefined') {
+		document.getElementById('oid_wrapper').id = 'oid_hidden';
+	}
+}
+	var userObj = {"wallColor":false,"wallEmblem":false,"wallOrientation":false,"ID":"-1","accepted":false,"hasInsaneSpeed":false};
+</script>
+
+</head>
+	
+
+
+<script src='sounds/script/soundmanager2-nodebug-jsmin.js'></script>
+<script>
+soundManager.setup({
+	url: '/sounds/swf/',
+	flashVersion: 9, // optional: shiny features (default = 8)
+	useFlashBlock: false, // optionally, enable when you're ready to dive in/**
+	onready: function() {
+    // Ready to use; soundManager.createSound() etc. can now be called.
+		soundManager.createSound({id: 'achieve',url: '/sounds/achieve.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'ufoblip', url: '/sounds/ufoblip.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'bling', url: '/sounds/bling.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'blingb', url: '/sounds/blingb.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'charm',url: '/sounds/charm.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'blip',url: '/sounds/blip.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'cap',url: '/sounds/cap.mp3'});
+		soundManager.createSound({id: 'click',url: '/sounds/click.mp3'});
+		soundManager.createSound({id: 'sc',url: '/sounds/transmission.mp3'});
+		soundManager.createSound({id: 'hologram',url: '/sounds/hologram.mp3'});
+		soundManager.createSound({id: 'pit',url: '/sounds/pit.mp3'});
+		soundManager.createSound({id: 'select',url: '/sounds/select.mp3'});
+	}
+});
+</script>
+<body><div class='mainContent'><div></div>	<div class="wrapper" id="oid_hidden" >
+			<h2>Sign in</h2>
+			<div id="oid_box">
+				<h2 style="color:#333;">Please sign in using one of the following</h2>
+				<a rel="nofollow" href="https://accounts.google.com/o/oauth2/auth?response_type=code&redirect_uri=https%3A%2F%2Fwww.pathery.com%2Flogin%3Fop%3Dgoogle&client_id=622952176562-cflugrcd6vtuh3cngc8u2kctonmhd6k9.apps.googleusercontent.com&scope=email&access_type=online&approval_prompt=auto&openid.realmhttps%3A%2F%2Fwww.pathery.com%2F"><img id="oid_btn" src="images/btns/signin_Google.png" alt="Sign in with Google" /></a>
+				<a rel="nofollow" href="login?op=facebook"><img id="oid_btn" src="images/btns/signin_Facebook.png" alt="Sign in with Facebook" /></a>
+				<a rel="nofollow" href="login?op=twitter"><img id="oid_btn" src="images/btns/signin_Twitter.png" alt="Sign in with Twitter" /></a>
+				<a rel="nofollow" href="login?op=yahoo"><img id="oid_btn" src="images/btns/signin_Yahoo.png" alt="Sign in with Yahoo" /></a>
+				<a rel="nofollow" href="login?op=live"><img id="oid_btn" src="images/btns/signin_WindowsLive.png" alt="Sign in with Windows Live" /></a>
+
+				<a id="oid_learn" href="http://openid.net/get-an-openid/what-is-openid/"  target="_blank" >Learn more about OpenID</a>
+				<a id="oauth_learn" href="http://oauth.net/about/"  target="_blank" >Learn more about OAuth</a>
+				<a id="oid_cancel" href="javascript:hideSignin();">X</a>
+			</div>
+		</div><div id="topbar"><div id="topbarContent"><a href='home' class='nav'>Home</a><a href='scores' class='nav'>Scores</a><a href='tutorial' class='nav selected'>Tutorial</a><div id='user'><a href='javascript:showSignin();'>Sign in</a>	</div></div></div><div class='topbarSpacer'></div><script type="text/javascript">
+playerWallColor = '';
+playerWallEmblem = '';
+</script>
+
+<script>
+isChallenge = true;
+isTutorial = true;
+challengeID = 1;
+
+
+function challengeLoad() {}
+
+
+challenge1 = new Object();
+challenge2 = new Object();
+challenge3 = new Object();
+challenge4 = new Object();
+challenge5 = new Object();
+
+
+challenge1.start = "The objective in this game is to create the longest <i>path</i> between the start and the finish.<br>Below is a demonstration.<br>Press <b>Go!</b>";
+challenge1.complete = "Now that you see what is going on, let's move on to some puzzles.<br/>Press <b>Next</b>";
+
+challenge2.start = "Let's start off simple.<br>Start by pressing <b>Go!</b> first.";
+challenge2.wallstext = "Excellent; those wall placements look good!<br>Press <b>Go!</b> and see the path you\'ve made.";
+challenge2.complete = "Splendid!<br>Shall we move on to the next puzzle?<br/>Press <b>Next</b>";
+challenge2.help = "Click on the board to place two walls to make the path longer.<br>You can click on a placed wall to remove it.";
+
+challenge3.start = "The goal for this map is 64 moves<br>Press <b>Go!</b> first again.";
+challenge3.complete = "Impressive!<br/>Press <b>Next</b>";
+challenge3.help = "Note that the path can travel over the <i>Start</i> and <i>End</i> tiles.";
+
+challenge4.start = "Teleports are traps you can use to your advantage. See if you can use the teleport to reach 33 moves!<br>Press <b>Go!</b>";
+challenge4.complete = "Well done!<br>Teleports add extra intrigue to the game.";
+challenge4.help = "Let's use that teleport to block the way to the <i>A</i>!<br>We can make the path take longer to get to <i>A</i> in the process.";
+
+challenge5.start = "Now for a difficult one. The goal for this one is 75 moves.<br>Press <b>Go!</b> to check your path.";
+challenge5.complete = "Look at you, so pro.<br><a href='home'>Go play the game!</a>";
+challenge5.help = "Try placing the walls as highlighted.";
+
+function challengeGo(mapid) {
+	var moves = mapjson[mapid].path[0].moves;
+	var tiles;
+
+	switch (mapid) {
+	case 1:
+		tv.unlock(2);
+		updateDsp(1, 'instructions', challenge1.complete);
+		break;
+
+	case 2:
+		if (moves >= 18) {
+			updateDsp(1, 'instructions', challenge2.complete);
+			tv.unlock(3);
+		} else {
+			updateDsp(1, 'instructions', challenge2.help);
+			tiles = ["2,2,5","2,3,6"];
+			markTiles(tiles);
+		}
+		break;
+
+	case 3:
+		if (moves >= 64) {
+			updateDsp(1, 'instructions', challenge3.complete);
+			tv.unlock(4);
+		} else {
+			updateDsp(1, 'instructions', challenge3.help);
+			tiles = ["3,2,6","3,3,7","3,2,2","3,1,1"];
+			markTiles(tiles);
+		}
+		break;
+
+	case 4:
+		if (moves >= 33) {
+			updateDsp(1, 'instructions', challenge4.complete);
+			tv.unlock(5);
+		} else {
+			updateDsp(1, 'instructions', challenge4.help);
+			tiles = ["4,0,5","4,1,6","4,2,7","4,3,9"];
+			markTiles(tiles);
+		}
+		break;
+
+	case 5:
+		if (moves >= 75) {
+			updateDsp(1, 'instructions', challenge5.complete);
+			//Unlock next button.
+		} else {
+			updateDsp(1, 'instructions', challenge5.help);
+			tiles = ["5,0,5","5,1,6","5,2,3","5,3,2","5,2,1"];
+			markTiles(tiles);
+		}
+		break;
+
+	}
+}
+
+
+
+function markTiles(tiles) {
+	for(var i in tiles) {
+		var tmp = tiles[i];
+		setTimeout('document.getElementById("'+tiles[i]+'").style.backgroundColor = "#ccccdd"', i*150 + 900);
+	}
+}
+
+//TODO:
+function challengeWall(mapid) {
+	//Required walls:
+	var reqwall = new Array();
+	reqwall[0] = "3,5.";
+	reqwall[1] = "4,6.";
+
+	for(var i in reqwall) {
+		if (solution[mapid].indexOf(reqwall[i]) == -1) {
+			//Failed
+			return;
+		}
+	}
+	updateDsp(1, 'instructions', challenge2.wallstext)
+}
+function highlightElement(Eid) {
+}
+
+
+function startChallenge(mapid) {
+	//console.log("start challenge", mapid);
+	switch (mapid) {
+	case 1:
+		updateDsp(1, 'instructions', challenge1.start);
+		var goBtn = document.getElementById('1,btn');
+		var interval1 = setInterval(function() {
+				goBtn.className += ' flash';
+			}, 1200),
+			interval2;
+		setTimeout(function() {
+			interval2 = setInterval(function() {
+				goBtn.className = goBtn.className.replace(' flash', '');
+			}, 1200);
+		}, 600);
+		var prevHandler = goBtn.onclick;
+		goBtn.onclick = function() {
+			clearInterval(interval1);
+			clearInterval(interval2);
+			goBtn.className = goBtn.className.replace(' flash', '');
+			prevHandler.apply(this, arguments);
+		}
+		break;
+	case 2:
+		updateDsp(1, 'instructions', challenge2.start);
+		break;
+	case 3:
+		updateDsp(1, 'instructions', challenge3.start);
+		break;
+	case 4:
+		updateDsp(1, 'instructions', challenge4.start);
+		break;
+	case 5:
+		updateDsp(1, 'instructions', challenge5.start);
+		break;
+	}
+}
+
+function TutorialView(low, high) {
+	this.low = low;
+	this.high = high;
+	this.cur = low;
+	//Lock them all.
+	this.locked = low;
+
+	//Override hack to unlock all the levels.
+	//this.locked = high;
+
+	this.nextbtn = document.getElementById('nextbtn');
+	this.prevbtn = document.getElementById('prevbtn');
+	this.interval1 = this.interval2 = null;
+	mixpanel.track('tutorial', {'step': this.cur});
+}
+TutorialView.prototype.showTutorial = function(num) {
+	for (var i = this.low; i <= this.high; i++) {
+		var elem = document.getElementById("tut-" + i);
+		if (elem.className.indexOf('hidden') < 0)
+			elem.className += 'hidden';
+	}
+	elem = document.getElementById("tut-" + num);
+	elem.className = elem.className.replace('hidden', '');
+	//Is the map after this disabled?
+	this.nextbtn.className = this.nextbtn.className.replace(' disabled', '');
+	if (this.locked <= this.cur)
+		this.nextbtn.className += ' disabled';
+	startChallenge(num);
+	tv.nextbtn.className = tv.nextbtn.className.replace(' flash', '');
+}
+TutorialView.prototype.next = function() {
+	clearInterval(this.interval1);
+	clearInterval(this.interval2);
+	if (this.nextbtn.className.indexOf(' disabled') > -1)
+		return;
+	this.showTutorial(++this.cur);
+	if (this.cur == this.high) {
+		if (this.nextbtn.className.indexOf('hidden') < 0)
+			this.nextbtn.className += ' hidden';
+	} else {
+		this.nextbtn.className = this.nextbtn.className.replace(' hidden', '');
+		//this.nextbtn.className += ' disabled';
+	}
+	this.prevbtn.className = this.prevbtn.className.replace(' hidden', '');
+	mixpanel.track('tutorial', {'step': this.cur});
+}
+TutorialView.prototype.prev = function() {
+	this.showTutorial(--this.cur);
+	if (this.cur == this.low) {
+		if (this.prevbtn.className.indexOf('hidden') < 0)
+			this.prevbtn.className += ' hidden';
+	} else
+		this.prevbtn.className = this.prevbtn.className.replace(' hidden', '');
+	this.nextbtn.className = this.nextbtn.className.replace(' hidden', '');
+}
+TutorialView.prototype.unlock = function(n) {
+	if (n > this.locked) {
+		this.locked = n;
+		if (this.locked >= this.cur) {
+			this.nextbtn.className = this.nextbtn.className.replace(' disabled', '');
+			this.interval1 = setInterval(function() {
+				this.nextbtn.className += ' flash';
+			}, 1200);
+			setTimeout(function() {
+				tv.interval2 = setInterval(function() {
+					tv.nextbtn.className = tv.nextbtn.className.replace(' flash', '');
+				}, 1200);
+			}, 600);
+		}
+	}
+
+}
+</script>
+
+<a href='home' style='padding-left:7px;'>Skip Tutorial</a>
+
+<div id="tut-wrapper">
+	<div style='height:80px;' id='1,instructions'>
+		<p>The objective in this game is to create the longest <i>path</i> between the start and the finish.<br>Below is a demonstration.<br>Press <b>Go!</b></p>;
+	</div>
+<div id="tut-1" class="hidden"></div><div id="tut-2" class="hidden"></div><div id="tut-3" class="hidden"></div><div id="tut-4" class="hidden"></div><div id="tut-5" class="hidden"></div><script>
+$('#tut-1').html(mapAsHTML(decryptJSON('{"solution":null,"validated":true,"debug":["Validation: map reload: 0.00064301490783691","Validation: routePath is not blocked 0.0013740062713623","Validation: Next target:",{"c":1},"Not Blocked",{"blocked":false,"start":"0,4","end":"2,0","pathAsArray":[2,2,2,2,2,2,2,1,2,1,2,1,1,4,4,3,4,3,4,4,1,1,4,4]},"Validation: Next target:",{"f":1},"Not Blocked",{"blocked":false,"start":"2,0","end":"9,0","pathAsArray":[2,2,3,3,2,2,1,1,2,2,2]},"Validation: From normal start locations looks good!","Passed validation! - Validation took 0.0015349388122559 seconds"],"ID":1,"tiles":[[["s",1],["r",1],["c",1],["o",1],["o",1],["r",1],["o",1],["o",1],["o",1],["f",1]],[["s",1],["o",1],["r",1],["o",1],["o",1],["r",1],["o",1],["o",1],["r",1],["f",1]],[["s",1],["o",1],["o",1],["r",1],["o",1],["o",1],["o",1],["r",1],["o",1],["f",1]],[["s",1],["o",1],["o",1],["o",1],["r",1],["r",1],["r",1],["o",1],["o",1],["f",1]],[["s",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["f",1]]],"teleports":0,"checkpoints":1,"loaded":true,"width":10,"height":5,"walls":"0","name":"Unnamed","flags":"","dateCreated":"","dateExpires":"","isBlind":false,"containsNormalStart":true,"containsReverseStart":false,"normalStartLocations":["0,0","0,1","0,2","0,3","0,4"],"reverseStartLocations":null,"code":"10.5.0.Unnamed...:,s1.,r1.,c1.2,r1.3,f1.,s1.1,r1.2,r1.2,r1.,f1.,s1.2,r1.3,r1.1,f1.,s1.3,r1.,r1.,r1.2,f1.,s1.8,f1.","oldCode":null,"isChallenge":true}')));
+$('#tut-2').html(mapAsHTML(decryptJSON('{"solution":null,"validated":true,"debug":["Validation: map reload: 5.1021575927734E-5","Validation: routePath is not blocked 0.0001518726348877","Validation: Next target:",{"c":1},"Not Blocked",{"blocked":false,"start":"0,2","end":"4,0","pathAsArray":[2,2,2,2,2,1,1,4]},"Validation: Next target:",{"f":1},"Not Blocked",{"blocked":false,"start":"4,0","end":"8,0","pathAsArray":[2,2,2,2]},"Validation: From normal start locations looks good!","Passed validation! - Validation took 0.00023984909057617 seconds"],"ID":2,"tiles":[[["s",1],["o",1],["o",1],["r",1],["c",1],["o",1],["o",1],["o",1],["f",1]],[["s",1],["o",1],["o",1],["o",1],["r",1],["o",1],["o",1],["o",1],["f",1]],[["s",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["f",1]],[["s",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["f",1]],[["s",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["f",1]]],"teleports":0,"checkpoints":1,"loaded":true,"width":9,"height":5,"walls":"2","name":"Unnamed","flags":"","dateCreated":"","dateExpires":"","isBlind":false,"containsNormalStart":true,"containsReverseStart":false,"normalStartLocations":["0,0","0,1","0,2","0,3","0,4"],"reverseStartLocations":null,"code":"9.5.2.Unnamed...:,s1.2,r1.,c1.3,f1.,s1.3,r1.3,f1.,s1.7,f1.,s1.7,f1.,s1.7,f1.","oldCode":null,"isChallenge":true}')));
+$('#tut-3').html(mapAsHTML(decryptJSON('{"solution":null,"validated":true,"debug":["Validation: map reload: 4.57763671875E-5","Validation: routePath is not blocked 0.0002598762512207","Validation: Next target:",{"c":1},"Not Blocked",{"blocked":false,"start":"0,2","end":"5,0","pathAsArray":[2,2,2,2,2,2,1,1,4]},"Validation: Next target:",{"c":2},"Not Blocked",{"blocked":false,"start":"5,0","end":"3,4","pathAsArray":[2,3,3,4,4,4,4,3,3,2]},"Validation: Next target:",{"f":1},"Not Blocked",{"blocked":false,"start":"3,4","end":"8,2","pathAsArray":[4,1,1,2,2,2,2,2,2]},"Validation: From normal start locations looks good!","Passed validation! - Validation took 0.00048398971557617 seconds"],"ID":3,"tiles":[[["s",1],["o",1],["o",1],["o",1],["r",1],["c",1],["o",1],["o",1],["f",1]],[["s",1],["o",1],["o",1],["o",1],["o",1],["r",1],["o",1],["o",1],["f",1]],[["s",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["f",1]],[["s",1],["o",1],["o",1],["r",1],["o",1],["o",1],["o",1],["o",1],["f",1]],[["s",1],["o",1],["o",1],["c",2],["r",1],["o",1],["o",1],["o",1],["f",1]]],"teleports":0,"checkpoints":2,"loaded":true,"width":9,"height":5,"walls":"4","name":"Unnamed","flags":"","dateCreated":"","dateExpires":"","isBlind":false,"containsNormalStart":true,"containsReverseStart":false,"normalStartLocations":["0,0","0,1","0,2","0,3","0,4"],"reverseStartLocations":null,"code":"9.5.4.Unnamed...:,s1.3,r1.,c1.2,f1.,s1.4,r1.2,f1.,s1.7,f1.,s1.2,r1.4,f1.,s1.2,c2.,r1.3,f1.","oldCode":null,"isChallenge":true}')));
+$('#tut-4').html(mapAsHTML(decryptJSON('{"solution":null,"validated":true,"debug":["Validation: map reload: 5.1021575927734E-5","Validation: routePath is not blocked 0.00017595291137695","Validation: Next target:",{"c":1},"Not Blocked",{"blocked":false,"start":"0,0","end":"6,0","pathAsArray":[2,2,2,2,2,2]},"Validation: Next target:",{"f":1},"Not Blocked",{"blocked":false,"start":"6,0","end":"10,0","pathAsArray":[2,2,2,2]},"Validation: From normal start locations looks good!","Passed validation! - Validation took 0.00029397010803223 seconds"],"ID":4,"tiles":[[["s",1],["u",1],["o",1],["o",1],["o",1],["o",1],["c",1],["o",1],["o",1],["o",1],["f",1]],[["s",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["f",1]],[["s",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["f",1]],[["s",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["r",1],["o",1],["f",1]],[["s",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["t",1],["o",1],["f",1]]],"teleports":1,"checkpoints":1,"loaded":true,"width":11,"height":5,"walls":"4","name":"Unnamed","flags":"","dateCreated":"","dateExpires":"","isBlind":false,"containsNormalStart":true,"containsReverseStart":false,"normalStartLocations":["0,0","0,1","0,2","0,3","0,4"],"reverseStartLocations":null,"code":"11.5.4.Unnamed...:,s1.,u1.4,c1.3,f1.,s1.9,f1.,s1.9,f1.,s1.7,r1.1,f1.,s1.7,t1.1,f1.","oldCode":null,"isChallenge":true}')));
+$('#tut-5').html(mapAsHTML(decryptJSON('{"solution":null,"validated":true,"debug":["Validation: map reload: 6.103515625E-5","Validation: routePath is not blocked 0.00031685829162598","Validation: Next target:",{"c":1},"Not Blocked",{"blocked":false,"start":"0,0","end":"4,0","pathAsArray":[2,2,2,2]},"Validation: Next target:",{"c":2},"Not Blocked",{"blocked":false,"start":"4,0","end":"6,0","pathAsArray":[2,2]},"Validation: Next target:",{"c":3},"Not Blocked",{"blocked":false,"start":"6,0","end":"3,1","pathAsArray":[4,4,4,3]},"Validation: Next target:",{"f":1},"Not Blocked",{"blocked":false,"start":"3,1","end":"10,2","pathAsArray":[3,2,2,2,2,2,2,2]},"Validation: From normal start locations looks good!","Passed validation! - Validation took 0.00051784515380859 seconds"],"ID":5,"tiles":[[["s",1],["o",1],["o",1],["o",1],["c",1],["o",1],["c",2],["t",1],["o",1],["r",1],["f",1]],[["s",1],["o",1],["o",1],["c",3],["r",1],["o",1],["o",1],["o",1],["o",1],["o",1],["f",1]],[["s",1],["o",1],["u",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["f",1]],[["s",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["f",1]],[["s",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["f",1]]],"teleports":1,"checkpoints":3,"loaded":true,"width":11,"height":5,"walls":"5","name":"Unnamed","flags":"","dateCreated":"","dateExpires":"","isBlind":false,"containsNormalStart":true,"containsReverseStart":false,"normalStartLocations":["0,0","0,1","0,2","0,3","0,4"],"reverseStartLocations":null,"code":"11.5.5.Unnamed...:,s1.3,c1.1,c2.,t1.1,r1.,f1.,s1.2,c3.,r1.5,f1.,s1.1,u1.7,f1.,s1.9,f1.,s1.9,f1.","oldCode":null,"isChallenge":true}')));
+</script>
+
+	<div class="wrapper">
+	<a href="javascript:tv.next()" id="nextbtn" class="next disabled">Next</a>
+	<a href="javascript:tv.prev()" id="prevbtn" class="next hidden">Previous</a>
+	</div>
+</div>
+
+<script>
+var tv = new TutorialView(1, 5);
+tv.showTutorial(1);
+</script>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<div style='clear:both'></div><div class='footerPush'></div></div> <!-- /mainContent -->	<div class='footerArea'><div class='divide'></div>		<div><ul id='triple'><li><a href='tutorial'>Tutorial</a></li><li><a href='faq'>FAQ</a></li><li><a href='members'>Member List</a></li><li><a href='chat'>Chat</a></li><li><a href='scores'>Scores</a></li><li><a href='about'>About Us</a></li><li><a href='feedback'>Contact Us</a></li><li><a href='#top'>Back to Top</a></li><li><a href='privacy'>Privacy Policy</a></li>		</ul></div>
+		<div class='copyAndButtons'>
+			<div id='copy'>
+				Copyright &copy; 2011-2018 pathery.com
+			</div>
+			<div id='socialButtons' class='buttons'>
+				<a href='http://www.reddit.com/r/Pathery' target='top' title='Reddit'><img alt='Reddit' src='images/btns/reddit.png' /></a>
+				<a href='https://twitter.com/Pathery' target='top' title='Twitter'><img alt='Twitter' src='images/btns/twitter.png' /></a>
+			</div>
+		</div>
+		
+		<! -- Image Preload -->
+		<div style='visibility:hidden;display:none'>
+			<img src='images/MedalGoldCAR.png' alt=''>
+			<img src='images/MedalSilverCAR.png' alt=''>
+			<img src='images/paths/Path1-1.png' alt=''>
+			<img src='images/paths/Path1-2.png' alt=''>
+			<img src='images/paths/Path1-3.png' alt=''>
+			<img src='images/paths/Path1-4.png' alt=''>
+			<img src='images/paths/Path2-1.png' alt=''>
+			<img src='images/paths/Path2-2.png' alt=''>
+			<img src='images/paths/Path2-3.png' alt=''>
+			<img src='images/paths/Path2-4.png' alt=''>
+			<img src='images/OverlayTileFaceted50.png' alt=''>
+			<img src='images/OverlayTileFaceted30.png' alt=''>
+			<img src='images/OverlayTileFaceted10.png' alt=''>
+			<img src='images/OverlayTileFaceted20.png' alt=''>
+
+			<img src='images/OverlayFinish50c.png' alt=''>
+			<img src='images/OverlayStart50b.png' alt=''>
+
+			<img src='images/OverlayStart2.png' alt=''>
+
+			<img src='images/OverlayTile10.png' alt=''>
+
+			<img src='images/OverlayA50.png' alt=''>
+			<img src='images/OverlayB50.png' alt=''>
+			<img src='images/OverlayC50.png' alt=''>
+			<img src='images/TeleportOutW.png' alt=''>
+			<img src='images/TeleportInW.png' alt=''>
+		</div>
+	
+    <script>
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-371072-3']);
+    _gaq.push(['_trackPageview']);
+
+	WebFontConfig = {
+		google: {
+			families: ['Cantarell:400,700:latin']
+		}
+	};
+
+	(function() {
+		var proto = document.location.protocol,
+		    s = document.getElementsByTagName('script')[0].parentNode;
+
+		var wf = document.createElement('script');
+		wf.src = ('https:' == proto ? 'https' : 'http') + '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+		wf.type = 'text/javascript';
+		wf.async = 'true';
+		s.appendChild(wf, s);
+
+
+		var ga = document.createElement('script');
+		ga.type = 'text/javascript';
+		ga.async = true;
+        ga.src = ('https:' == proto ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		s.parentNode.appendChild(ga, s);
+	
+    })();
+
+	</script>
+
+	</div><!-- /footerArea -->
+</body>
+</html>
+	

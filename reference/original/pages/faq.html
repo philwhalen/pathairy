@@ -1,0 +1,322 @@
+
+<!DOCTYPE html>
+<html xml:lang='en' lang='en'>
+<head>
+	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+	<title>FAQ</title>
+
+	<link href='css/page.css?v=050513.css' rel='stylesheet' type='text/css' />
+	<link href='css/maps.css?v=20180724.css' rel='stylesheet' type='text/css' />
+	<link rel="image_src" type="image/png" href="/images/linkdsp.png" />
+	<link rel="icon" href="/favicon.ico" type="image/x-icon"/>
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+	
+	<script src="js/ajax.js" async="async"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<meta name='Description' content='How does the pathing work?'><script src='js/globe.js?v=20180724.js'></script><script src='js/mapspecs.js?v=20180724.js'></script>
+	<script>
+	(function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");b.type="text/javascript";b.async=!0;b.src=("https:"===c.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.1.min.js';d=c.getElementsByTagName("script")[0];d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?
+	g=a[f]=[]:f="mixpanel";g.people=g.people||[];h="disable track track_pageview track_links track_forms register register_once unregister identify name_tag set_config people.identify people.set people.increment".split(" ");for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.1})(document,window.mixpanel||[]);
+	mixpanel.init("24743c6567f831ddfcbbbd3f397e11e4");
+
+	
+    </script>
+
+<script>
+function showSignin() {
+	if (typeof document.getElementById('oid_hidden') !== 'undefined') {
+		document.getElementById('oid_hidden').id = 'oid_wrapper';
+	}
+}
+function hideSignin() {
+	if (typeof document.getElementById('oid_wrapper') !== 'undefined') {
+		document.getElementById('oid_wrapper').id = 'oid_hidden';
+	}
+}
+	var userObj = {"wallColor":false,"wallEmblem":false,"wallOrientation":false,"ID":"-1","accepted":false,"hasInsaneSpeed":false};
+</script>
+
+</head>
+	
+
+<script src='sounds/script/soundmanager2-nodebug-jsmin.js'></script>
+<script>
+soundManager.setup({
+	url: '/sounds/swf/',
+	flashVersion: 9, // optional: shiny features (default = 8)
+	useFlashBlock: false, // optionally, enable when you're ready to dive in/**
+	onready: function() {
+    // Ready to use; soundManager.createSound() etc. can now be called.
+		soundManager.createSound({id: 'achieve',url: '/sounds/achieve.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'ufoblip', url: '/sounds/ufoblip.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'bling', url: '/sounds/bling.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'blingb', url: '/sounds/blingb.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'charm',url: '/sounds/charm.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'blip',url: '/sounds/blip.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'cap',url: '/sounds/cap.mp3'});
+		soundManager.createSound({id: 'click',url: '/sounds/click.mp3'});
+		soundManager.createSound({id: 'sc',url: '/sounds/transmission.mp3'});
+		soundManager.createSound({id: 'hologram',url: '/sounds/hologram.mp3'});
+		soundManager.createSound({id: 'pit',url: '/sounds/pit.mp3'});
+		soundManager.createSound({id: 'select',url: '/sounds/select.mp3'});
+	}
+});
+</script>
+<body><div class='mainContent'><div></div>	<div class="wrapper" id="oid_hidden" >
+			<h2>Sign in</h2>
+			<div id="oid_box">
+				<h2 style="color:#333;">Please sign in using one of the following</h2>
+				<a rel="nofollow" href="https://accounts.google.com/o/oauth2/auth?response_type=code&redirect_uri=https%3A%2F%2Fwww.pathery.com%2Flogin%3Fop%3Dgoogle&client_id=622952176562-cflugrcd6vtuh3cngc8u2kctonmhd6k9.apps.googleusercontent.com&scope=email&access_type=online&approval_prompt=auto&openid.realmhttps%3A%2F%2Fwww.pathery.com%2F"><img id="oid_btn" src="images/btns/signin_Google.png" alt="Sign in with Google" /></a>
+				<a rel="nofollow" href="login?op=facebook"><img id="oid_btn" src="images/btns/signin_Facebook.png" alt="Sign in with Facebook" /></a>
+				<a rel="nofollow" href="login?op=twitter"><img id="oid_btn" src="images/btns/signin_Twitter.png" alt="Sign in with Twitter" /></a>
+				<a rel="nofollow" href="login?op=yahoo"><img id="oid_btn" src="images/btns/signin_Yahoo.png" alt="Sign in with Yahoo" /></a>
+				<a rel="nofollow" href="login?op=live"><img id="oid_btn" src="images/btns/signin_WindowsLive.png" alt="Sign in with Windows Live" /></a>
+
+				<a id="oid_learn" href="http://openid.net/get-an-openid/what-is-openid/"  target="_blank" >Learn more about OpenID</a>
+				<a id="oauth_learn" href="http://oauth.net/about/"  target="_blank" >Learn more about OAuth</a>
+				<a id="oid_cancel" href="javascript:hideSignin();">X</a>
+			</div>
+		</div><div id="topbar"><div id="topbarContent"><a href='home' class='nav'>Home</a><a href='scores' class='nav'>Scores</a><a href='tutorial' class='nav'>Tutorial</a><div id='user'><a href='javascript:showSignin();'>Sign in</a>	</div></div></div><div class='topbarSpacer'></div>
+<div class="wrapper">
+
+
+<h2 style='margin-top:65px;'>Questions and Answers</h2>
+<ul>
+	<li><a href='#pathing'>How does the pathing work? / How does it choose which way to go?</a></li>
+	<li><a href='#multipath'>How does Multi-path work? (Two paths at once)</a></li>
+	<li><a href='#greed'>More than one of the same checkpoint?</a></li>
+	<li><a href='#ice'>Ice Tiles?</a></li>
+	<li><a href='#championPoints'>What are 'Champion Points?'</a></li>
+	<li><a href='#cheaters'>Can players cheat?</a></li>
+	<li><a href='#themesong'>Does Pathery have a theme song?</a></li>
+</ul>
+Your question not here? Ask me via the <a href='feedback'>Feedback Page</a>.
+
+
+<a name='pathing'>&nbsp;</a>
+<h3>How does the pathing work?</h3>
+<p>The pathing tries to find the best route possible.
+In open areas there's lots of identical paths for it to take;
+To choose which path it will go it follows these priorities:
+<b> UP, RIGHT, DOWN, LEFT.</b>
+This means that the path will go UP as far as it can first &ndash; then right, down, left.
+<br />If the path is going to the TOP RIGHT from the BOTTOM LEFT, the path will go UP all the way to the top, then RIGHT.
+<br />If the path is going to the BOTTOM LEFT, from the TOP RIGHT, the path will go all the way DOWN and then LEFT.
+<br />TOP LEFT, from BOTTOM RIGHT, UP, then LEFT.
+<br />So, BOTTOM LEFT, from TOP RIGHT? If you answer "DOWN then LEFT" you are correct!
+<br />If you answered "uhhmm.. what's up with the directions in caps?" then you get a bonus point!
+<br />Remember, teleports are traps and do not effect the path choice.
+<h3>Demo 1</h3>
+<div id='demo-1'></div>
+<div style='clear:both'></div>
+
+</p>
+
+<hr width='60%' />
+
+<a name='multipath'>&nbsp;</a>
+<h3>How does Multi-path work? (Two paths at once)</h3>
+
+<div class="map playable" style="float:left; width:70px; height:35px">
+	<div style="float:left; width:35px; height:35px; " class="mapcell s">
+	</div>
+	<div style="float:left; width:35px; height:35px; " class="mapcell s2">
+	</div>
+</div>
+
+<p>The Green start location on a map starts the Green Path, or 'Path 1'.
+
+<br />The Green Path noted by the green in the arrow may pass over Green Allow blocks:
+
+<div class="map playable" style="width:35px; height:35px">
+	<div style="float:left; width:35px; height:35px; " class="mapcell x2">
+	</div>
+</div>
+
+But they can't cross Red blocks:
+
+<div class="map playable" style="width:35px; height:35px">
+	<div style="float:left; width:35px; height:35px; " class="mapcell x">
+	</div>
+</div>
+
+<br />
+Likewise, the Red Path noted by red in the arrow may pass over Red Allow blocks
+
+<h3>Demo 2</h3>
+<div id='demo-2'></div>
+<div style='clear:both'></div>
+
+<hr width='60%' />
+
+<a name='greed'>&nbsp;</a>
+<h3>More than one of the same checkpoint?</h3>
+
+<div class="map playable" style="width:140px; height:35px">
+	<div style="float:left; width:35px; height:35px; " class="mapcell c">
+	</div>
+	<div style="float:left; width:35px; height:35px; " class="mapcell c">
+	</div>
+	<div style="float:left; width:35px; height:35px; " class="mapcell c2">
+	</div>
+	<div style="float:left; width:35px; height:35px; " class="mapcell c2">
+	</div>
+</div>
+
+<p>The pathing is very greedy. It's only looking at it's next target.
+<b>It does not look at the big-picture</b>. You can use this to your advantage.
+When there's more than one checkpoint, you can completely wall one off.
+<br />Not many maps will contain more than one of any checkpoint.
+<br />The below demo demonstrates it's greed. - The path will actually be shorter if you wall the bottom A!
+
+<h3>Demo 3</h3>
+<div id='demo-3'></div>
+<div style='clear:both'></div>
+
+<hr width='60%' />
+
+<a name='ice'>&nbsp;</a>
+<h3>How do these ice tiles work</h3>
+<div class="map playable" style="width:35px; height:35px">
+	<div style="float:left; width:35px; height:35px; " class="mapcell z5">
+	</div>
+</div>
+<p>The path cannot turn on these tiles
+<br />These tiles are pathed as part of the pathing engine, and are not traps.
+<br />The pathing engine will make use of the ice tiles to find the shortest path.
+<br />But you can still use them to your advantage! See the demo!
+</p>
+
+<h3>Demo 4</h3>
+<div id='demo-4'></div>
+<div style='clear:both'></div>
+
+<hr width='60%' />
+
+<a name='championPoints'>&nbsp;</a>
+<h3>What are 'Champion Points?'</h3>
+<img src="../images/championpoints.png"></img>
+<p>Champion Points are a way to give you recognition for your skills and dedication.  They work like this:
+<ul><li>Just for attempting a map, you get 5 points.  That's 20 points a day just for clicking go!</li>
+	<li>If you tie the high score, you get anywhere between 10 and 200 points,
+		depending on how many people tied or didn't tie the high score.</li>
+	<li>The winner of each map receives an additional small bonus.</li>
+	<li>On the weekly maps, <i>everyone</i> gets points!  The more people you beat, the more points you'll get!</li>
+	</ul>
+	Make sure to play every day to receive as many points as possible!
+</p>
+<hr width='60%' />
+
+<a name='cheaters'>&nbsp;</a>
+<h3>Can players cheat?</h3>
+<p>We'll assume you mean, "Can you write a solver?". Yes, and No...
+<br />The Pathery problem is a NP-Complete problem (With or without teleports).
+<br />You might think you have the best solution, or point at the scoreboard and show me that 30 people are tied at this top score.
+But, you cannot mathmatically PROVE your solution is the best. And for this same reason, solvers are weak. (It would take years for
+ a computer to prove a solution is the best - I give you 24 hours.)
+<br /><i>The larger and more complicated the map, the greater advantage a human brain has over a computer.</i>
+<br />This is what motivated me to make this game. And why it continues to hold my love.
+<br />So no, you can't write a solver, but Yes, you can write a <b>Pathery AI</b>. Pathery AI's do exist, and can find limited success depending on the map.
+<br />You can read more about this topic @ <a href='http://www.mazetheory.com/'>Mazetheory.com</a>.
+<br />
+<br />Pathery has similar properties as the <a title='Wiki' href="https://en.wikipedia.org/wiki/Longest_path_problem" target='top'>The Longest Path Problem (wiki)</a>
+</p>
+<hr width='60%' />
+
+<a name='themesong'>&nbsp;</a>
+<h3>Does Pathery have a theme song?</h3>
+<p>Wow, I'm surprised you asked! We do! A parody by <i><a href="https://en.wikipedia.org/wiki/Daniel_J._Barrett">Daniel Jay Barrett</a></i>.
+</p>
+<audio src="sounds/music/find_the_longest_path.mp3" controls>
+	<a href='sounds/music/find_the_longest_path.mp3' target='top'>Find The Longest Path Song</a>
+</audio>
+
+<br />
+
+<br /><br />
+</div>
+
+<script>
+$('#demo-1').html(mapAsHTML(decryptJSON('{"solution":null,"validated":true,"debug":["Validation: map reload: 0.00027203559875488","Validation: routePath is not blocked 0.0035009384155273","Validation: Next target:",{"c":1},"Not Blocked",{"blocked":false,"start":"0,2","end":"6,0","pathAsArray":[1,2,1,2,2,2,2,2]},"Validation: Next target:",{"c":2},"Not Blocked",{"blocked":false,"start":"6,0","end":"0,4","pathAsArray":[3,3,4,3,3,"t1",4,4,4,4,4]},"Validation: Next target:",{"f":1},"Not Blocked",{"blocked":false,"start":"0,4","end":"8,3","pathAsArray":[2,2,2,2,2,"t1",2,2,1,2]},"Validation: From normal start locations looks good!","Passed validation! - Validation took 0.003899097442627 seconds"],"ID":1,"tiles":[[["r",1],["o",1],["o",1],["o",1],["o",1],["o",1],["c",1],["u",1],["o",1]],[["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1]],[["s",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1]],[["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["r",1],["o",1],["f",1]],[["c",2],["o",1],["o",1],["o",1],["o",1],["t",1],["o",1],["o",1],["o",1]]],"teleports":1,"checkpoints":2,"loaded":true,"width":9,"height":5,"walls":"999","name":"Pathing Demo 1","flags":"","dateCreated":"","dateExpires":"","isBlind":false,"containsNormalStart":true,"containsReverseStart":false,"normalStartLocations":["0,2"],"reverseStartLocations":null,"code":"9.5.999.Pathing Demo 1...:,r1.5,c1.,u1.10,s1.14,r1.1,f1.,c2.4,t1.","oldCode":null,"isChallenge":true}')));
+$('#demo-2').html(mapAsHTML(decryptJSON('{"solution":null,"validated":true,"debug":["Validation: map reload: 0.00012016296386719","Validation: routePath is not blocked 0.00059413909912109","Validation: Next target:",{"c":1},"Not Blocked",{"blocked":false,"start":"0,0","end":"0,2","pathAsArray":[2,2,2,3,3,4,4,4]},"Validation: Next target:",{"f":1},"Not Blocked",{"blocked":false,"start":"0,2","end":"10,4","pathAsArray":[2,2,2,1,1,2,2,2,2,2,2,2,3,3,3,3]},"Validation: From normal start locations looks good!","Validation: Checking Reverse Start Locations...","Validation: Next target:",{"c":1},"Not Blocked",{"blocked":false,"start":"0,4","end":"0,2","pathAsArray":[1,1]},"Validation: Next target:",{"f":1},"Not Blocked",{"blocked":false,"start":"0,2","end":"10,4","pathAsArray":[2,2,2,1,1,2,2,2,2,2,2,2,3,3,3,3]},"Passed validation! - Validation took 0.00098705291748047 seconds"],"ID":2,"tiles":[[["s",1],["o",1],["o",1],["x",2],["o",1],["o",1],["o",1],["o",1],["o",1],["x",2],["x",2]],[["x",1],["x",1],["x",1],["x",2],["r",1],["r",1],["o",1],["r",1],["x",1],["r",1],["x",2]],[["c",1],["o",1],["o",1],["o",1],["x",1],["x",1],["x",1],["r",1],["x",1],["r",1],["x",2]],[["x",2],["x",2],["x",2],["x",2],["x",2],["x",2],["o",1],["r",1],["x",1],["r",1],["o",1]],[["s",2],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["r",1],["x",1],["o",1],["f",1]]],"teleports":0,"checkpoints":1,"loaded":true,"width":11,"height":5,"walls":"999","name":"Pathing Demo 2","flags":"","dateCreated":"","dateExpires":"","isBlind":false,"containsNormalStart":true,"containsReverseStart":true,"normalStartLocations":["0,0"],"reverseStartLocations":["0,4"],"code":"11.5.999.Pathing Demo 2...:,s1.2,x2.5,x2.,x2.,x1.,x1.,x1.,x2.,r1.,r1.1,r1.,x1.,r1.,x2.,c1.3,x1.,x1.,x1.,r1.,x1.,r1.,x2.,x2.,x2.,x2.,x2.,x2.,x2.1,r1.,x1.,r1.1,s2.6,r1.,x1.1,f1.","oldCode":null,"isChallenge":true}')));
+$('#demo-3').html(mapAsHTML(decryptJSON('{"solution":null,"validated":false,"debug":["Validation: map reload: 7.0810317993164E-5","Validation: routePath is not blocked 0.00026082992553711","Validation: Next target:",{"c":1},"Not Blocked",{"blocked":false,"start":"0,2","end":"2,4","pathAsArray":[2,2,2,3,3,4]},"Validation: Next target:",{"c":2},"Not Blocked",{"blocked":false,"start":"8,0","end":"8,1","pathAsArray":[3]}],"ID":3,"tiles":[[["s",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["c",1]],[["s",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["c",2]],[["s",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["c",3]],[["s",1],["o",1],["r",1],["o",1],["o",1],["r",1],["o",1],["o",1],["f",1]],[["s",1],["r",1],["c",1],["o",1],["r",1],["c",2],["r",1],["o",1],["o",1]]],"teleports":0,"checkpoints":3,"loaded":true,"width":9,"height":5,"walls":"999","name":"Pathing Demo 3","flags":"","dateCreated":"","dateExpires":"","isBlind":false,"containsNormalStart":true,"containsReverseStart":false,"normalStartLocations":["0,0","0,1","0,2","0,3","0,4"],"reverseStartLocations":null,"code":"9.5.999.Pathing Demo 3...:,s1.7,c1.,s1.7,c2.,s1.7,c3.,s1.1,r1.2,r1.2,f1.,s1.,r1.,c1.1,r1.,c2.,r1.","oldCode":null,"isChallenge":true}')));
+$('#demo-4').html(mapAsHTML(decryptJSON('{"solution":null,"validated":true,"debug":["Validation: map reload: 6.0796737670898E-5","Validation: routePath is not blocked 0.00013899803161621","Validation: Next target:",{"f":1},"Not Blocked",{"blocked":false,"start":"0,2","end":"3,5","pathAsArray":[2,2,2,2,2,2,3,3,3,4,4,4]},"Validation: From normal start locations looks good!","Passed validation! - Validation took 0.00019288063049316 seconds"],"ID":4,"tiles":[[["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1]],[["r",1],["r",1],["o",1],["o",1],["o",1],["r",1],["o",1],["o",1]],[["s",1],["o",1],["z",5],["z",5],["z",5],["o",1],["o",1],["o",1]],[["r",1],["r",1],["o",1],["o",1],["o",1],["r",1],["o",1],["o",1]],[["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1],["o",1]],[["o",1],["o",1],["o",1],["f",1],["o",1],["o",1],["o",1],["o",1]]],"teleports":0,"checkpoints":0,"loaded":true,"width":8,"height":6,"walls":"999","name":"Pathing Demo 4","flags":"","dateCreated":"","dateExpires":"","isBlind":false,"containsNormalStart":true,"containsReverseStart":false,"normalStartLocations":["0,2"],"reverseStartLocations":null,"code":"8.6.999.Pathing Demo 4...:8,r1.,r1.3,r1.2,s1.1,z5.,z5.,z5.3,r1.,r1.3,r1.13,f1.","oldCode":null,"isChallenge":true}')));
+</script>
+<div style='clear:both'></div><div class='footerPush'></div></div> <!-- /mainContent -->	<div class='footerArea'><div class='divide'></div>		<div><ul id='triple'><li><a href='tutorial'>Tutorial</a></li><li><a href='faq'>FAQ</a></li><li><a href='members'>Member List</a></li><li><a href='chat'>Chat</a></li><li><a href='scores'>Scores</a></li><li><a href='about'>About Us</a></li><li><a href='feedback'>Contact Us</a></li><li><a href='#top'>Back to Top</a></li><li><a href='privacy'>Privacy Policy</a></li>		</ul></div>
+		<div class='copyAndButtons'>
+			<div id='copy'>
+				Copyright &copy; 2011-2018 pathery.com
+			</div>
+			<div id='socialButtons' class='buttons'>
+				<a href='http://www.reddit.com/r/Pathery' target='top' title='Reddit'><img alt='Reddit' src='images/btns/reddit.png' /></a>
+				<a href='https://twitter.com/Pathery' target='top' title='Twitter'><img alt='Twitter' src='images/btns/twitter.png' /></a>
+			</div>
+		</div>
+		
+		<! -- Image Preload -->
+		<div style='visibility:hidden;display:none'>
+			<img src='images/MedalGoldCAR.png' alt=''>
+			<img src='images/MedalSilverCAR.png' alt=''>
+			<img src='images/paths/Path1-1.png' alt=''>
+			<img src='images/paths/Path1-2.png' alt=''>
+			<img src='images/paths/Path1-3.png' alt=''>
+			<img src='images/paths/Path1-4.png' alt=''>
+			<img src='images/paths/Path2-1.png' alt=''>
+			<img src='images/paths/Path2-2.png' alt=''>
+			<img src='images/paths/Path2-3.png' alt=''>
+			<img src='images/paths/Path2-4.png' alt=''>
+			<img src='images/OverlayTileFaceted50.png' alt=''>
+			<img src='images/OverlayTileFaceted30.png' alt=''>
+			<img src='images/OverlayTileFaceted10.png' alt=''>
+			<img src='images/OverlayTileFaceted20.png' alt=''>
+
+			<img src='images/OverlayFinish50c.png' alt=''>
+			<img src='images/OverlayStart50b.png' alt=''>
+
+			<img src='images/OverlayStart2.png' alt=''>
+
+			<img src='images/OverlayTile10.png' alt=''>
+
+			<img src='images/OverlayA50.png' alt=''>
+			<img src='images/OverlayB50.png' alt=''>
+			<img src='images/OverlayC50.png' alt=''>
+			<img src='images/TeleportOutW.png' alt=''>
+			<img src='images/TeleportInW.png' alt=''>
+		</div>
+	
+    <script>
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-371072-3']);
+    _gaq.push(['_trackPageview']);
+
+	WebFontConfig = {
+		google: {
+			families: ['Cantarell:400,700:latin']
+		}
+	};
+
+	(function() {
+		var proto = document.location.protocol,
+		    s = document.getElementsByTagName('script')[0].parentNode;
+
+		var wf = document.createElement('script');
+		wf.src = ('https:' == proto ? 'https' : 'http') + '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+		wf.type = 'text/javascript';
+		wf.async = 'true';
+		s.appendChild(wf, s);
+
+
+		var ga = document.createElement('script');
+		ga.type = 'text/javascript';
+		ga.async = true;
+        ga.src = ('https:' == proto ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		s.parentNode.appendChild(ga, s);
+	
+    })();
+
+	</script>
+
+	</div><!-- /footerArea -->
+</body>
+</html>
+	

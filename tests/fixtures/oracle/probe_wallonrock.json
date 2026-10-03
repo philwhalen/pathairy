@@ -1,0 +1,27 @@
+{
+ "name": "probe_wallonrock",
+ "code": "4.1.1.P...:,s1.,r1.1,f1.",
+ "solution": ".0,2.:",
+ "response": {
+  "totalMoves": 0,
+  "blocked": true,
+  "path": [
+   {
+    "start": "0,0",
+    "end": "-1,0",
+    "blocked": true,
+    "lastTarget": {
+     "f": 1
+    },
+    "pathArray": [
+     "f1"
+    ],
+    "moves": 0
+   }
+  ],
+  "mapid": -1,
+  "isChallenge": false,
+  "mapcodeExecuted": "4.1.1.P...:,s1.,r1.1,f1.",
+  "usedSolution": ".0,2.:"
+ }
+}

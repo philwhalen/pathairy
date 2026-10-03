@@ -1,0 +1,35 @@
+{
+ "name": "probe_upright",
+ "code": "5.5.0.D...:4,f1.15,s1.",
+ "solution": "..:",
+ "response": {
+  "totalMoves": 8,
+  "blocked": false,
+  "path": [
+   {
+    "start": "0,4",
+    "end": "4,0",
+    "pathArray": [
+     "f1",
+     1,
+     1,
+     1,
+     1,
+     2,
+     2,
+     2,
+     2,
+     "r"
+    ],
+    "moves": 8,
+    "blocked": false
+   }
+  ],
+  "mapid": -1,
+  "isChallenge": false,
+  "mapcodeExecuted": "5.5.0.D...:4,f1.15,s1.",
+  "usedSolution": "..:",
+  "best": 0,
+  "bestby": "no one"
+ }
+}

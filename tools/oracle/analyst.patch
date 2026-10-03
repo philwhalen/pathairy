@@ -1,0 +1,42 @@
+--- a/src/analyst.js
++++ b/src/analyst.js
+@@ -203,7 +203,7 @@
+ 
+ PatheryGraph.prototype.snapify = function(keyed) {
+   var unkeyed = this.unkeyify(keyed);
+-  return [unkeyed[1], unkeyed[0] + 1];
++  return [unkeyed[1], unkeyed[0]];
+ };
+ 
+ PatheryGraph.prototype.path_dir = function(oldkey, newkey) {
+@@ -753,10 +753,10 @@
+       var cpname = FINISH;
+     } else if (reversed)  {
+       var targets = graph.checkpoints[graph.checkpoints.length - 1 - index];
+-      var cpname = CHECKPOINTS[graph.checkpoints.length - 1 - index];
++      var cpname = 'c'+(graph.checkpoints.length - index);
+     } else {
+       var targets = graph.checkpoints[index];
+-      var cpname = CHECKPOINTS[index];
++      var cpname = 'c'+(index+1);
+     }
+     for (var i in targets) {
+       var target = targets[i];
+@@ -779,7 +779,7 @@
+         start: start_block_str,
+         end: end_block_str,
+         lastTarget: lastTarget,
+-        path: fullpathinfo.join(''),
++        path: fullpathinfo,
+       };
+       return {
+         path: retpath,
+@@ -844,7 +844,7 @@
+     blocked: false,
+     start: start_block_str,
+     end: end_block_str,
+-    path: fullpathinfo.join(''),
++    path: fullpathinfo,
+     moves: totalMoves,
+   };
+   return {

@@ -1,0 +1,27 @@
+{
+ "name": "probe_blocked",
+ "code": "5.1.1.B...:,s1.3,f1.",
+ "solution": ".0,2.:",
+ "response": {
+  "totalMoves": 0,
+  "blocked": true,
+  "path": [
+   {
+    "start": "0,0",
+    "end": "0,0",
+    "blocked": true,
+    "lastTarget": {
+     "f": 1
+    },
+    "pathArray": [
+     "f1"
+    ],
+    "moves": 0
+   }
+  ],
+  "mapid": -1,
+  "isChallenge": false,
+  "mapcodeExecuted": "5.1.1.B...:,s1.3,f1.",
+  "usedSolution": ".0,2.:"
+ }
+}

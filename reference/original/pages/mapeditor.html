@@ -1,0 +1,618 @@
+
+<!DOCTYPE html>
+<html xml:lang='en' lang='en'>
+<head>
+	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+	<title>Map Editor</title>
+
+	<link href='css/page.css?v=050513.css' rel='stylesheet' type='text/css' />
+	<link href='css/maps.css?v=20180724.css' rel='stylesheet' type='text/css' />
+	<link rel="image_src" type="image/png" href="/images/linkdsp.png" />
+	<link rel="icon" href="/favicon.ico" type="image/x-icon"/>
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+		<link href="css/stats.css?v=20180724.css" rel="stylesheet" type="text/css" />
+	<link href="css/mapeditor.css?v=20180724.css" rel="stylesheet" type="text/css" />
+
+	<script src="js/ajax.js" async="async"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<meta name='Description' content='Map Editor'><script src='js/globe.js?v=20180724.js'></script><script src='js/mapspecs.js?v=20180724.js'></script><script src='js/dateformat.js?v=20180724.js'></script>
+	<script>
+	(function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");b.type="text/javascript";b.async=!0;b.src=("https:"===c.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.1.min.js';d=c.getElementsByTagName("script")[0];d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?
+	g=a[f]=[]:f="mixpanel";g.people=g.people||[];h="disable track track_pageview track_links track_forms register register_once unregister identify name_tag set_config people.identify people.set people.increment".split(" ");for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.1})(document,window.mixpanel||[]);
+	mixpanel.init("24743c6567f831ddfcbbbd3f397e11e4");
+
+	
+    </script>
+
+<script>
+function showSignin() {
+	if (typeof document.getElementById('oid_hidden') !== 'undefined') {
+		document.getElementById('oid_hidden').id = 'oid_wrapper';
+	}
+}
+function hideSignin() {
+	if (typeof document.getElementById('oid_wrapper') !== 'undefined') {
+		document.getElementById('oid_wrapper').id = 'oid_hidden';
+	}
+}
+	var userObj = {"wallColor":false,"wallEmblem":false,"wallOrientation":false,"ID":"-1","accepted":false,"hasInsaneSpeed":false};
+</script>
+
+</head>
+	
+
+<script src='sounds/script/soundmanager2-nodebug-jsmin.js'></script>
+<script>
+soundManager.setup({
+	url: '/sounds/swf/',
+	flashVersion: 9, // optional: shiny features (default = 8)
+	useFlashBlock: false, // optionally, enable when you're ready to dive in/**
+	onready: function() {
+    // Ready to use; soundManager.createSound() etc. can now be called.
+		soundManager.createSound({id: 'achieve',url: '/sounds/achieve.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'ufoblip', url: '/sounds/ufoblip.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'bling', url: '/sounds/bling.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'blingb', url: '/sounds/blingb.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'charm',url: '/sounds/charm.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'blip',url: '/sounds/blip.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'cap',url: '/sounds/cap.mp3'});
+		soundManager.createSound({id: 'click',url: '/sounds/click.mp3'});
+		soundManager.createSound({id: 'sc',url: '/sounds/transmission.mp3'});
+		soundManager.createSound({id: 'hologram',url: '/sounds/hologram.mp3'});
+		soundManager.createSound({id: 'pit',url: '/sounds/pit.mp3'});
+		soundManager.createSound({id: 'select',url: '/sounds/select.mp3'});
+	}
+});
+</script>
+<body><div class='mainContent'><div></div>	<div class="wrapper" id="oid_hidden" >
+			<h2>Sign in</h2>
+			<div id="oid_box">
+				<h2 style="color:#333;">Please sign in using one of the following</h2>
+				<a rel="nofollow" href="https://accounts.google.com/o/oauth2/auth?response_type=code&redirect_uri=https%3A%2F%2Fwww.pathery.com%2Flogin%3Fop%3Dgoogle&client_id=622952176562-cflugrcd6vtuh3cngc8u2kctonmhd6k9.apps.googleusercontent.com&scope=email&access_type=online&approval_prompt=auto&openid.realmhttps%3A%2F%2Fwww.pathery.com%2F"><img id="oid_btn" src="images/btns/signin_Google.png" alt="Sign in with Google" /></a>
+				<a rel="nofollow" href="login?op=facebook"><img id="oid_btn" src="images/btns/signin_Facebook.png" alt="Sign in with Facebook" /></a>
+				<a rel="nofollow" href="login?op=twitter"><img id="oid_btn" src="images/btns/signin_Twitter.png" alt="Sign in with Twitter" /></a>
+				<a rel="nofollow" href="login?op=yahoo"><img id="oid_btn" src="images/btns/signin_Yahoo.png" alt="Sign in with Yahoo" /></a>
+				<a rel="nofollow" href="login?op=live"><img id="oid_btn" src="images/btns/signin_WindowsLive.png" alt="Sign in with Windows Live" /></a>
+
+				<a id="oid_learn" href="http://openid.net/get-an-openid/what-is-openid/"  target="_blank" >Learn more about OpenID</a>
+				<a id="oauth_learn" href="http://oauth.net/about/"  target="_blank" >Learn more about OAuth</a>
+				<a id="oid_cancel" href="javascript:hideSignin();">X</a>
+			</div>
+		</div><div id="topbar"><div id="topbarContent"><a href='home' class='nav'>Home</a><a href='scores' class='nav'>Scores</a><a href='tutorial' class='nav'>Tutorial</a><div id='user'><a href='javascript:showSignin();'>Sign in</a>	</div></div></div><div class='topbarSpacer'></div><script>
+
+
+var testMap = new Object;
+
+testMap.ID = 0;
+testMap.editMap = true;
+testMap.width = 6;
+testMap.height = 5;
+testMap.tiles = constructTiles(6, 5);
+testMap.name = 'Testmap';
+testMap.walls = 5;
+
+setTimeout("reloadMap();", 500);
+setTimeout("start();", 500);
+function start() {
+	//$('#testMapDisplay').html(mapAsHTML(testMap));
+
+	$(window).mousedown(function(){
+    mouseIsDown = true;
+
+	});
+
+	$(window).mouseup(function(){
+		 mouseIsDown = false;
+	});
+
+}
+
+var mouseIsDown = false;
+
+var mapHasChanged = false;
+function mapEditOver(obj) {
+	if (mouseIsDown == true) mapEditClick(obj);
+}
+function mapEditClick(obj) {
+
+	console.log("Map Click");
+	tmp = obj.id.split(',');
+	mapid = tmp[0] - 0;
+	y = tmp[1];
+	x = tmp[2];
+
+	testMap.tiles[y][x] = Array(palleteType, palleteValue);
+	y++;
+	$(obj).attr('class', 'mapcell '+palleteType+palleteValue);
+	mapHasChanged = true;
+}
+
+getMapTimer();
+function getMapTimer() {
+	setTimeout("getMapTimer()", 3000);
+	if (mapHasChanged) {
+		loadPlayableMap();
+		mapHasChanged = false;
+	}
+}
+
+
+var palleteType = 's';
+var palleteValue = '';
+function paletteSelect(type, value) {
+	palleteValue = value;
+	palleteType = type;
+}
+
+function plusWalls() {
+	testMap.walls = testMap.walls - 0 + 1;
+	reloadMap();
+}
+function minusWalls() {
+	testMap.walls = testMap.walls - 1;
+	reloadMap();
+}
+function plusWidth() {
+	changeDimensions(testMap.width - 0 + 1, testMap.height);
+}
+function minusWidth() {
+	changeDimensions(testMap.width - 1, testMap.height);
+}
+function plusHeight() {
+	changeDimensions(testMap.width, testMap.height - 0 + 1);
+}
+function minusHeight() {
+	changeDimensions(testMap.width, testMap.height - 1);
+}
+function updateName() {
+	testMap.name = $('#mapName').val();
+	mapHasChanged = true;
+}
+
+function changeDimensions(width, height) {
+	width = Math.min(width, 50);
+	height = Math.min(height, 50);
+
+	testMap.tiles = constructTiles(width, height, testMap);
+	//testMap.tiles[0][3] = Array('s');
+	//testMap.tiles[4][3] = Array('f');
+	testMap.width = width;
+	testMap.height = height;
+	console.log('rl');
+	reloadMap();
+}
+
+var playableMap;
+function reloadMap() {
+	$('#testMapDisplay').html(mapAsHTML(testMap, 590, true));
+	//Duplicate object
+	var returnedMap = jQuery.extend(true, {}, testMap);
+
+	loadPlayableMap();
+}
+
+var isLoadingMap = false;
+function loadPlayableMap() {
+
+	if (isLoadingMap == true) return;
+	isLoadingMap = true;
+
+	//var URLString = 'mapeditor?mapByMap='+JSON.stringify(testMap);
+	var URLString = 'mapeditor';
+	$.ajax({
+		type: "POST",
+		url: URLString,
+		cache: true,
+		data: 'mapByMap='+JSON.stringify(testMap),
+		fail: function() { alert("error"); },
+		complete: function(data) {
+			playableMap = decryptJSON(data.responseText);
+			playableMap.editMap = false;
+			playableMap.ID = -1;
+			$('#playableMapDisplay').html(mapAsHTML(playableMap, 960));
+			//$('#mapDebugDisplay').html(playableMap.validated);
+			//console.log(playableMap.validated);
+			$('#playableMapCodeDisplay').val(playableMap.code);
+			$('#playableMapCodeDisplayOLD').val(playableMap.oldCode);
+			isLoadingMap = false;
+		}
+	});
+}
+
+function loadMap(by) {
+
+	var URLString = '';
+	var mapID = 0;
+	if (by == 'ID') {
+		mapID = $('#mapID').val();
+		URLString = 'a/map/'+mapID+'.js';
+	} else if (by == 'code') {
+		mapCode = $('#mapCode').val();
+		URLString = 'mapeditor?mapByCode='+mapCode;
+	} else if (by == 'gen') {
+		mapCode = $('#mapCode').val();
+		URLString = 'mapeditor?genMap=true'+mapCode;
+		var height = $('#genMapHeight').val();
+		var width = $('#genMapWidth').val();
+		var rockChance = $('#genMapRockChance').val();
+		var checkpoints = $('#genMapCheckpoints').val();
+		var teleports = $('#genMapTeleports').val();
+		URLString += '&height='+height;
+		URLString += '&width='+width;
+		URLString += '&wallCount='+testMap.walls;
+		URLString += '&rockChance='+rockChance;
+		URLString += '&checkpoints='+checkpoints;
+		URLString += '&teleports='+teleports;
+	} else if (by == 'special') {
+		var specialMapName = $('#specialMapSelect').val();
+		URLString = 'mapeditor?mapBySpecial='+specialMapName;
+	} else {
+		return false;
+	}
+	$.ajax({
+		type: "GET",
+		url: URLString,
+		cache: true,
+		data: '',
+		fail: function() { alert("error"); },
+		complete: function(data) {
+			if (!data.responseText) return;
+			var map = decryptJSON(data.responseText);
+			if (!map) return;
+			testMap = map;
+			testMap.ID = 0;
+			testMap.editMap = true;
+			reloadMap();
+		}
+	});
+}
+
+function constructTiles(width, height, baseMap) {
+	console.log('construct start');
+	var tiles = new Array;
+	for (var y = 0; y < height; y++) {
+		tiles[y] = new Array;
+		for (var x = 0; x < width; x++) {
+			tiles[y][x] = new Array;
+			if (typeof(baseMap) !== 'undefined' &&
+				typeof(baseMap.tiles[y]) !== 'undefined' &&
+				typeof(baseMap.tiles[y][x]) !== 'undefined'
+				) tiles[y][x] = baseMap.tiles[y][x];
+			else tiles[y][x][0] = 'o';
+		}
+	}
+	console.log('construct done');
+	return tiles;
+}
+
+</script>
+
+<div class='wrapper'>
+
+<h3>Map Editor Beta</h3>
+
+
+	<div class='wrapper'>
+		<form>
+			<fieldset>
+				<legend>Load Map:</legend>
+					<div class='plusMinus'>
+					Load map by ID:<input id='mapID' size="5" type="text" value="" class="forminput"/>
+					<input type="button" value="Load" class="forminput" onclick='loadMap("ID")'/>
+					</div>
+
+					<div class='plusMinus' style='width:300px;'>
+					Load map by code:<input id='mapCode' size="30" type="text" value="" class="forminput"/>
+					<input type="button" value="Load" class="forminput" onclick='loadMap("code")'/>
+					</div>
+
+					<div class='plusMinus' style='width:300px;'>
+					Generate a special map: <br />
+					<select id="specialMapSelect">
+					  <option value="random special">Random Special</option>
+						<optgroup label="-- Original Main Set --"></optgroup>
+						<option value="simple">Simple</option>
+					  <option value="normal">Normal</option>
+					 	<option value="complex">Complex</option>
+
+						<optgroup label="-- Originals --"></optgroup>
+						<option value="abcs">ABC's</option>
+						<option value="centralized">Centralized</option>
+						<option value="dualing paths">Dualing Paths</option>
+						<option value="loop craziness">Loop Craziness</option>
+						<option value="mirror image">Mirror Image</option>
+						<option value="rocky maze">Rocky Maze</option>
+						<option value="reverse order">Reverse Order</option>
+						<option value="seeing double">Seeing Double</option>
+						<option value="side to side">Side to Side</option>
+						<option value="teleport madness">Teleport Madness</option>
+						<option value="thirty">Thirty</option>
+					 	<option value="thirty too">Thirty Too</option>
+						<option value="ultimate random">Ultimate Random</option>
+						<option value="ultra complex">Ultra Complex</option>
+					 	<option value="ultra complex unlimited">Ultra Complex Unlimited</option>
+
+						<optgroup label="-- Pathery Underground --"></optgroup>
+						<option value="15MinutesLate">15 Minutes Late</option>
+						<option value="BAAAAAAA">BAAAAAAA</option>
+						<option value="bombs away">Bombs Away</option>
+						<option value="edge case">Edge Case</option>
+						<option value="entanglement">Entanglement</option>
+						<option value="INception">INception</option>
+						<option value="layover">Layover</option>
+						<option value="rooms">Rooms</option>
+						<option value="triage">Triage</option>
+						<option value="web">Web</option>
+						<option value="YouOnlyLiveTwice">You Only Live Twice</option>
+
+						<optgroup label="-- Experimental --"></optgroup>
+						<option value="around">Around</option>
+						<option value="edge case ice">Edge Case Ice</option>
+						<option value="ice dial">Ice Dial</option>
+						<option value="ice dial 2">Ice Dial 2</option>
+						<option value="ice patches">Ice Patches</option>
+					</select>
+					<input type="button" value="Load" class="forminput" onclick='loadMap("special")'/>
+
+					</div>
+<!--
+					<div class='plusMinus' style='width:300px;'>
+						Generate a random map:
+						<br />Height:<input id='genMapHeight' size="4" type="number" value="" class="forminput"/>
+						<br />Width:<input id='genMapWidth' size="4" type="number" value="" class="forminput"/>
+						<br />Rockchance 1 in:<input id='genMapRockChance' size="4" type="number" value="" class="forminput"/>
+						<br />Checkpoints:<input id='genMapCheckpoints' size="4" type="number" value="" class="forminput"/> (Max 5)
+						<br />Teleports:<input id='genMapTeleports' size="4" type="number" value="" class="forminput"/> (Max 5)
+
+						<input type="button" value="Generate" class="forminput" onclick='loadMap("gen")'/>
+					</div>
+					-->
+			</fieldset>
+
+		</form>
+	</div>
+
+	<form onsubmit='return false'><div>
+		<div class='' id='' style='float:left; width:340px;height:530px;'>
+
+				<fieldset style='width:300px'>
+					<legend>Settings:</legend>
+					<div class='plusMinus' style='width:270px'>
+					Map Name:<input onchange='updateName()' id='mapName' style='width:260px;' size="10" type="text" value="" class="forminput"/>
+					</div>
+
+
+					<div class='plusMinus'>
+					Height:<input type="button" value="+" class="forminput" onclick='plusHeight()'/>
+					<input type="button" value="-" class="forminput" onclick='minusHeight()'/>
+					</div>
+					<div class='plusMinus'>
+					<span style='width:70px;'>Width:</span><input type="button" value="+" class="forminput" onclick='plusWidth()'/>
+					<input type="button" value="-" class="forminput" onclick='minusWidth()'/>
+					</div>
+					<div class='plusMinus'>
+					<span style='width:70px;'>Walls:</span><input type="button" value="+" class="forminput" onclick='plusWalls()'/>
+					<input type="button" value="-" class="forminput" onclick='minusWalls()'/>
+					</div>
+
+					<div style='clear:both'></div>
+
+					
+					<div class='tileDisplay map'>
+						<div class='s1' onclick="paletteSelect('s', '1')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='s2' onclick="paletteSelect('s', '2')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='f1' onclick="paletteSelect('f', '1')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='p1' onclick="paletteSelect('p', '1')"></div>
+					</div><div style="clear:both"></div>
+					<div class='tileDisplay map'>
+						<div class='x1' onclick="paletteSelect('x', '1')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='x2' onclick="paletteSelect('x', '2')"></div>
+					</div><div style="clear:both"></div>
+					<div class='tileDisplay map'>
+						<div class='z5' onclick="paletteSelect('z', '5')"></div>
+					</div><div style="clear:both"></div>
+					<div class='tileDisplay map'>
+						<div class='r1' onclick="paletteSelect('r', '1')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='r2' onclick="paletteSelect('r', '2')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='r3' onclick="paletteSelect('r', '3')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='o1' onclick="paletteSelect('o', '1')"></div>
+					</div><div style="clear:both"></div>
+					<div class='tileDisplay map'>
+						<div class='c1' onclick="paletteSelect('c', '1')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='c2' onclick="paletteSelect('c', '2')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='c3' onclick="paletteSelect('c', '3')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='c4' onclick="paletteSelect('c', '4')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='c5' onclick="paletteSelect('c', '5')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='c6' onclick="paletteSelect('c', '6')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='c7' onclick="paletteSelect('c', '7')"></div>
+					</div><div style="clear:both"></div>
+					<div class='tileDisplay map'>
+						<div class='c8' onclick="paletteSelect('c', '8')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='c9' onclick="paletteSelect('c', '9')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='c10' onclick="paletteSelect('c', '10')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='c11' onclick="paletteSelect('c', '11')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='c12' onclick="paletteSelect('c', '12')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='c13' onclick="paletteSelect('c', '13')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='c14' onclick="paletteSelect('c', '14')"></div>
+					</div><div style="clear:both"></div>
+					<div class='tileDisplay map'>
+						<div class='t1' onclick="paletteSelect('t', '1')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='t2' onclick="paletteSelect('t', '2')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='t3' onclick="paletteSelect('t', '3')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='t4' onclick="paletteSelect('t', '4')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='t5' onclick="paletteSelect('t', '5')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='t6' onclick="paletteSelect('t', '6')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='t7' onclick="paletteSelect('t', '7')"></div>
+					</div><div style="clear:both"></div>
+					<div class='tileDisplay map'>
+						<div class='u1' onclick="paletteSelect('u', '1')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='u2' onclick="paletteSelect('u', '2')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='u3' onclick="paletteSelect('u', '3')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='u4' onclick="paletteSelect('u', '4')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='u5' onclick="paletteSelect('u', '5')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='u6' onclick="paletteSelect('u', '6')"></div>
+					</div>
+					<div class='tileDisplay map'>
+						<div class='u7' onclick="paletteSelect('u', '7')"></div>
+					</div>
+				</fieldset>
+		</div>
+		<fieldset style='width:590px'>
+					<legend>Edit Map:</legend>
+		<div id='testMapDisplay' style='float:left;'>
+			Loading...
+		</div>
+		</fieldset>
+	</div></form>
+	<div style='clear:both;'></div>
+
+	<div class="divide"><strong>Playable Map</strong></div>
+	<div style='clear:both;'></div>
+	<div class='wrapper'>
+	Legacy MapCode (Some tiles are unsupported) <input id='playableMapCodeDisplayOLD' size="70" type="text" value="" class="forminput"/>
+	<br/>MapCode: <input id='playableMapCodeDisplay' size="100" type="text" value="" class="forminput"/>
+	</div>
+	<div id='playableMapDisplay' style='float:left;'>
+		Returned map goes here.
+	</div>
+	<div style='clear:both;'></div>
+</div>
+
+<div style='clear:both'></div><div class='footerPush'></div></div> <!-- /mainContent -->	<div class='footerArea'><div class='divide'></div>		<div><ul id='triple'><li><a href='tutorial'>Tutorial</a></li><li><a href='faq'>FAQ</a></li><li><a href='members'>Member List</a></li><li><a href='chat'>Chat</a></li><li><a href='scores'>Scores</a></li><li><a href='about'>About Us</a></li><li><a href='feedback'>Contact Us</a></li><li><a href='#top'>Back to Top</a></li><li><a href='privacy'>Privacy Policy</a></li>		</ul></div>
+		<div class='copyAndButtons'>
+			<div id='copy'>
+				Copyright &copy; 2011-2018 pathery.com
+			</div>
+			<div id='socialButtons' class='buttons'>
+				<a href='http://www.reddit.com/r/Pathery' target='top' title='Reddit'><img alt='Reddit' src='images/btns/reddit.png' /></a>
+				<a href='https://twitter.com/Pathery' target='top' title='Twitter'><img alt='Twitter' src='images/btns/twitter.png' /></a>
+			</div>
+		</div>
+		
+		<! -- Image Preload -->
+		<div style='visibility:hidden;display:none'>
+			<img src='images/MedalGoldCAR.png' alt=''>
+			<img src='images/MedalSilverCAR.png' alt=''>
+			<img src='images/paths/Path1-1.png' alt=''>
+			<img src='images/paths/Path1-2.png' alt=''>
+			<img src='images/paths/Path1-3.png' alt=''>
+			<img src='images/paths/Path1-4.png' alt=''>
+			<img src='images/paths/Path2-1.png' alt=''>
+			<img src='images/paths/Path2-2.png' alt=''>
+			<img src='images/paths/Path2-3.png' alt=''>
+			<img src='images/paths/Path2-4.png' alt=''>
+			<img src='images/OverlayTileFaceted50.png' alt=''>
+			<img src='images/OverlayTileFaceted30.png' alt=''>
+			<img src='images/OverlayTileFaceted10.png' alt=''>
+			<img src='images/OverlayTileFaceted20.png' alt=''>
+
+			<img src='images/OverlayFinish50c.png' alt=''>
+			<img src='images/OverlayStart50b.png' alt=''>
+
+			<img src='images/OverlayStart2.png' alt=''>
+
+			<img src='images/OverlayTile10.png' alt=''>
+
+			<img src='images/OverlayA50.png' alt=''>
+			<img src='images/OverlayB50.png' alt=''>
+			<img src='images/OverlayC50.png' alt=''>
+			<img src='images/TeleportOutW.png' alt=''>
+			<img src='images/TeleportInW.png' alt=''>
+		</div>
+	
+    <script>
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-371072-3']);
+    _gaq.push(['_trackPageview']);
+
+	WebFontConfig = {
+		google: {
+			families: ['Cantarell:400,700:latin']
+		}
+	};
+
+	(function() {
+		var proto = document.location.protocol,
+		    s = document.getElementsByTagName('script')[0].parentNode;
+
+		var wf = document.createElement('script');
+		wf.src = ('https:' == proto ? 'https' : 'http') + '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+		wf.type = 'text/javascript';
+		wf.async = 'true';
+		s.appendChild(wf, s);
+
+
+		var ga = document.createElement('script');
+		ga.type = 'text/javascript';
+		ga.async = true;
+        ga.src = ('https:' == proto ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		s.parentNode.appendChild(ga, s);
+	
+    })();
+
+	</script>
+
+	</div><!-- /footerArea -->
+</body>
+</html>
+	

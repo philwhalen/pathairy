@@ -1,0 +1,503 @@
+[
+  {
+    "name": "u_far_exit_nearest_target",
+    "question": "several uN exits",
+    "grid": ["Sa.A...A.F"],
+    "code": "10.1.0.u_far_exit...:,s1.,t1.1,u1.3,u1.1,f1.",
+    "solution": "..:",
+    "alternatives": "exits col3 and col7, F col9. nearest-target (analyst) -> col7: total 3. first-in-row-major -> col3: total 7. last -> col7 (same as nearest; separated by the next probe)",
+    "analystPrediction": {
+      "totalMoves": 3,
+      "blocked": false,
+      "paths": [
+        {
+          "start": "0,0",
+          "end": "9,0",
+          "moves": 3,
+          "tokens": ["f1", 2, "u", "7,0", "u", 2, 2, "r"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "u_first_exit_nearest_target",
+    "question": "several uN exits",
+    "grid": ["F.A...A.aS"],
+    "code": "10.1.0.u_first_ex...:,f1.1,u1.3,u1.1,t1.,s1.",
+    "solution": "..:",
+    "alternatives": "mirror: exits col2 and col6, F col0. nearest-target = first row-major = col2: total 3; last/other -> col6: total 7",
+    "analystPrediction": {
+      "totalMoves": 3,
+      "blocked": false,
+      "paths": [
+        {
+          "start": "9,0",
+          "end": "0,0",
+          "moves": 3,
+          "tokens": ["f1", 4, "u", "2,0", "u", 4, 4, "r"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "u_three_exits",
+    "question": "several uN exits",
+    "grid": ["Sa.A.A.....AF"],
+    "code": "13.1.0.u_three_ex...:,s1.,t1.1,u1.1,u1.5,u1.,f1.",
+    "solution": "..:",
+    "alternatives": "exits cols 3,5,11; F col12. nearest-target = last = col11 (total 2). first col3 -> 10, middle col5 -> 8",
+    "analystPrediction": {
+      "totalMoves": 2,
+      "blocked": false,
+      "paths": [
+        { "start": "0,0", "end": "12,0", "moves": 2, "tokens": ["f1", 2, "u", "11,0", "u", 2, "r"] }
+      ]
+    }
+  },
+  {
+    "name": "u_exit_tie_equal_dist",
+    "question": "several uN exits",
+    "grid": [".A.", "SaF", ".A."],
+    "code": "3.3.0.u_exit_tie...:1,u1.1,s1.,t1.,f1.1,u1.",
+    "solution": "..:",
+    "alternatives": "two exits both 2 from F (rows 0 and 2). Token coords show which: \"1,0\" (first row-major) vs \"1,2\"",
+    "analystPrediction": {
+      "totalMoves": 3,
+      "blocked": false,
+      "paths": [
+        {
+          "start": "0,1",
+          "end": "2,1",
+          "moves": 3,
+          "tokens": ["f1", 2, "u", "1,0", "u", 2, 3, "r"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "u_manhattan_vs_path",
+    "question": "several uN exits",
+    "grid": ["Sa..A#F", "#....#.", "...A..."],
+    "code": "7.3.0.u_manhatta...:,s1.,t1.2,u1.,r1.,f1.,r1.4,r1.4,u1.",
+    "solution": "..:",
+    "alternatives": "exit (4,0) is manhattan-nearest F but needs 6 real moves; exit (3,2) needs 5. path-distance (analyst) -> (3,2), total 6. manhattan or first row-major -> (4,0), total 7",
+    "analystPrediction": {
+      "totalMoves": 6,
+      "blocked": false,
+      "paths": [
+        {
+          "start": "0,0",
+          "end": "6,0",
+          "moves": 6,
+          "tokens": ["f1", 2, "u", "3,2", "u", 2, 2, 2, 1, 1, "r"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "u_two_numbers_two_exits",
+    "question": "several uN exits",
+    "grid": ["Sa..A.b..B.F"],
+    "code": "12.1.0.u_two_numb...:,s1.,t1.2,u1.1,t2.2,u2.1,f1.",
+    "solution": "..:",
+    "alternatives": "two teleport numbers each with an exit; each spent independently, tokens u,\"4,0\",u ... u,\"9,0\",u",
+    "analystPrediction": {
+      "totalMoves": 5,
+      "blocked": false,
+      "paths": [
+        {
+          "start": "0,0",
+          "end": "11,0",
+          "moves": 5,
+          "tokens": ["f1", 2, "u", "4,0", "u", 2, 2, "u", "9,0", "u", 2, 2, "r"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "u_sealed_exit",
+    "question": "several uN exits",
+    "grid": ["A#Sa..F", "###..A."],
+    "code": "7.2.0.u_sealed_e...:,u1.,r1.,s1.,t1.2,f1.,r1.,r1.,r1.2,u1.",
+    "solution": "..:",
+    "alternatives": "u1 at (0,0) is walled in (first in row-major, unreachable from F); u1 at (5,1) is open. analyst: reachable/nearest exit (5,1), total 3. first-listed exit -> stuck: blocked or error",
+    "analystPrediction": {
+      "totalMoves": 3,
+      "blocked": false,
+      "paths": [
+        {
+          "start": "2,0",
+          "end": "6,0",
+          "moves": 3,
+          "tokens": ["f1", 2, "u", "5,1", "u", 1, 2, "r"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "t_no_exit",
+    "question": "teleport edge cases",
+    "grid": ["S.a..F"],
+    "code": "6.1.0.t_no_exit...:,s1.1,t1.2,f1.",
+    "solution": "..:",
+    "alternatives": "tN with no uN: plain tile (analyst: 5 moves, no tokens) vs warp-nowhere/blocked/error. First use may emit u tokens?",
+    "analystPrediction": {
+      "totalMoves": 5,
+      "blocked": false,
+      "paths": [{ "start": "0,0", "end": "5,0", "moves": 5, "tokens": ["f1", 2, 2, 2, 2, 2, "r"] }]
+    }
+  },
+  {
+    "name": "u_no_entry",
+    "question": "teleport edge cases",
+    "grid": ["S.A..F"],
+    "code": "6.1.0.u_no_entry...:,s1.1,u1.2,f1.",
+    "solution": "..:",
+    "alternatives": "uN with no tN is a plain tile (sanity)",
+    "analystPrediction": {
+      "totalMoves": 5,
+      "blocked": false,
+      "paths": [{ "start": "0,0", "end": "5,0", "moves": 5, "tokens": ["f1", 2, 2, 2, 2, 2, "r"] }]
+    }
+  },
+  {
+    "name": "dual_tp_shared_state",
+    "question": "teleports with dual paths",
+    "grid": ["SR.a....A.F"],
+    "code": "11.1.0.dual_tp_sh...:,s1.,s2.1,t1.4,u1.1,f1.",
+    "solution": "..:",
+    "alternatives": "both paths cross t1. per-path state (analyst): green 3+2=5, red 2+2=4, total 9. shared state (second path sees t1 spent, no warp): 5+9=14",
+    "analystPrediction": {
+      "totalMoves": 9,
+      "blocked": false,
+      "paths": [
+        {
+          "start": "0,0",
+          "end": "10,0",
+          "moves": 5,
+          "tokens": ["f1", 2, 2, 2, "u", "8,0", "u", 2, 2, "r"]
+        },
+        {
+          "start": "1,0",
+          "end": "10,0",
+          "moves": 4,
+          "tokens": ["f1", 2, 2, "u", "8,0", "u", 2, 2, "r"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "dual_tp_reuse_twice",
+    "question": "teleports with dual paths",
+    "grid": ["SRa.A.a..F"],
+    "code": "10.1.0.dual_tp_re...:,s1.,s2.,t1.1,u1.1,t1.2,f1.",
+    "solution": "..:",
+    "alternatives": "two t1 tiles. per-path: green 2+5=7 (tokens u..u then \"t1\"), red 1+5=6, total 13. shared: 7+8=15. Also shows whether red emits its own u,x,y,u",
+    "analystPrediction": {
+      "totalMoves": 13,
+      "blocked": false,
+      "paths": [
+        {
+          "start": "0,0",
+          "end": "9,0",
+          "moves": 7,
+          "tokens": ["f1", 2, 2, "u", "4,0", "u", 2, 2, "t1", 2, 2, 2, "r"]
+        },
+        {
+          "start": "1,0",
+          "end": "9,0",
+          "moves": 6,
+          "tokens": ["f1", 2, "u", "4,0", "u", 2, 2, "t1", 2, 2, 2, "r"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "cp_gap_c1_c3",
+    "question": "missing checkpoint numbers",
+    "grid": ["S.1.....F", ".........", ".........", "......3.."],
+    "code": "9.4.0.cp_gap_c1_...:,s1.1,c1.5,f1.24,c3.",
+    "solution": "..:",
+    "alternatives": "c1,c3 (no c2). analyst stops at gap, c3 ignored: S,c1,F = 8. skip-gap: 14. error/blocked also possible",
+    "analystPrediction": {
+      "totalMoves": 8,
+      "blocked": false,
+      "paths": [
+        {
+          "start": "0,0",
+          "end": "8,0",
+          "moves": 8,
+          "tokens": ["c1", 2, 2, "r", "f1", 2, 2, 2, 2, 2, 2, "r"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "cp_gap_c2_only",
+    "question": "missing checkpoint numbers",
+    "grid": ["S.......F", ".........", ".........", "....2...."],
+    "code": "9.4.0.cp_gap_c2_...:,s1.7,f1.22,c2.",
+    "solution": "..:",
+    "alternatives": "only c2. analyst ignores it: 8. skip-gap: visits c2 = 14",
+    "analystPrediction": {
+      "totalMoves": 8,
+      "blocked": false,
+      "paths": [
+        { "start": "0,0", "end": "8,0", "moves": 8, "tokens": ["f1", 2, 2, 2, 2, 2, 2, 2, 2, "r"] }
+      ]
+    }
+  },
+  {
+    "name": "cp_gap_c1_c2_c4",
+    "question": "missing checkpoint numbers",
+    "grid": ["S.1.....F", ".........", ".........", "4...2...."],
+    "code": "9.4.0.cp_gap_c1_...:,s1.1,c1.5,f1.18,c4.3,c2.",
+    "solution": "..:",
+    "alternatives": "analyst stops after c2 (c4 ignored): 14. skip-gap visits c4: 22",
+    "analystPrediction": {
+      "totalMoves": 14,
+      "blocked": false,
+      "paths": [
+        {
+          "start": "0,0",
+          "end": "8,0",
+          "moves": 14,
+          "tokens": ["c1", 2, 2, "r", "c2", 2, 2, 3, 3, 3, "r", "f1", 1, 1, 1, 2, 2, 2, 2, "r"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "cp_gap_c1_c4",
+    "question": "missing checkpoint numbers",
+    "grid": ["S.1.....F", ".........", ".........", "4........"],
+    "code": "9.4.0.cp_gap_c1_...:,s1.1,c1.5,f1.18,c4.",
+    "solution": "..:",
+    "alternatives": "gap of two. analyst: 8. skip-gap: 18",
+    "analystPrediction": {
+      "totalMoves": 8,
+      "blocked": false,
+      "paths": [
+        {
+          "start": "0,0",
+          "end": "8,0",
+          "moves": 8,
+          "tokens": ["c1", 2, 2, "r", "f1", 2, 2, 2, 2, 2, 2, "r"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "cp_gap_c2_c3_no_c1",
+    "question": "missing checkpoint numbers",
+    "grid": ["S.2.....F", ".........", ".........", "3........"],
+    "code": "9.4.0.cp_gap_c2_...:,s1.1,c2.5,f1.18,c3.",
+    "solution": "..:",
+    "alternatives": "c1 missing but c2,c3 present. analyst ignores both: 8. skip-gap: 18",
+    "analystPrediction": {
+      "totalMoves": 8,
+      "blocked": false,
+      "paths": [
+        { "start": "0,0", "end": "8,0", "moves": 8, "tokens": ["f1", 2, 2, 2, 2, 2, 2, 2, 2, "r"] }
+      ]
+    }
+  },
+  {
+    "name": "cp_gap_dual",
+    "question": "missing checkpoint numbers",
+    "grid": ["S.1.....F", ".........", "R.......3", "........."],
+    "code": "9.4.0.cp_gap_dua...:,s1.1,c1.5,f1.9,s2.7,c3.",
+    "solution": "..:",
+    "alternatives": "dual with c2 missing. analyst: green S,c1,F=8, red R,c1,F=10, total 18. skip-gap: green 12, red 22, total 34",
+    "analystPrediction": {
+      "totalMoves": 18,
+      "blocked": false,
+      "paths": [
+        {
+          "start": "0,0",
+          "end": "8,0",
+          "moves": 8,
+          "tokens": ["c1", 2, 2, "r", "f1", 2, 2, 2, 2, 2, 2, "r"]
+        },
+        {
+          "start": "0,2",
+          "end": "8,0",
+          "moves": 10,
+          "tokens": ["c1", 1, 1, 2, 2, "r", "f1", 2, 2, 2, 2, 2, 2, "r"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "ice_deadend_rock",
+    "question": "ice",
+    "grid": ["SZ#", "#.#", "#F#"],
+    "code": "3.3.0.ice_deaden...:,s1.,z5.,r1.,r1.1,r1.,r1.,f1.,r1.",
+    "solution": "..:",
+    "alternatives": "ice then rock straight ahead; only route needs a turn on ice. analyst: blocked (cannot turn on ice). if slide stops at obstacle and may turn: 3 moves",
+    "analystPrediction": {
+      "totalMoves": 0,
+      "blocked": true,
+      "paths": [{ "start": "0,0", "end": "1,2", "moves": 0, "tokens": ["f1"] }]
+    }
+  },
+  {
+    "name": "ice_deadend_edge",
+    "question": "ice",
+    "grid": ["SZ", "#F"],
+    "code": "2.2.0.ice_deaden...:,s1.,z5.,r1.,f1.",
+    "solution": "..:",
+    "alternatives": "same with map edge ahead. analyst: blocked. turn allowed: 2 moves",
+    "analystPrediction": {
+      "totalMoves": 0,
+      "blocked": true,
+      "paths": [{ "start": "0,0", "end": "1,1", "moves": 0, "tokens": ["f1"] }]
+    }
+  },
+  {
+    "name": "ice_chain_turn",
+    "question": "ice",
+    "grid": ["SZ#", "#ZF"],
+    "code": "3.2.0.ice_chain_...:,s1.,z5.,r1.,r1.,z5.,f1.",
+    "solution": "..:",
+    "alternatives": "turn from ice onto ice. analyst: blocked. turn allowed: 3 moves",
+    "analystPrediction": {
+      "totalMoves": 0,
+      "blocked": true,
+      "paths": [{ "start": "0,0", "end": "2,1", "moves": 0, "tokens": ["f1"] }]
+    }
+  },
+  {
+    "name": "ice_slide_continues",
+    "question": "ice",
+    "grid": ["SZ...", "#...F"],
+    "code": "5.2.0.ice_slide_...:,s1.,z5.3,r1.3,f1.",
+    "solution": "..:",
+    "alternatives": "leave ice in same direction, then free: analyst 5 moves (2,2,2,2,3). if the slide continues over plain tiles until an obstacle: different/blocked",
+    "analystPrediction": {
+      "totalMoves": 5,
+      "blocked": false,
+      "paths": [{ "start": "0,0", "end": "4,1", "moves": 5, "tokens": ["f1", 2, 2, 2, 2, 3, "r"] }]
+    }
+  },
+  {
+    "name": "ice_wall_ahead",
+    "question": "ice",
+    "grid": ["SZ.F", "#..."],
+    "code": "4.2.1.ice_wall_a...:,s1.,z5.1,f1.,r1.",
+    "solution": ".0,2.:",
+    "alternatives": "player wall at (row0,col2) right after ice. analyst: blocked. walls behave unlike rocks / turn allowed: 5 moves",
+    "analystPrediction": {
+      "totalMoves": 0,
+      "blocked": true,
+      "paths": [{ "start": "0,0", "end": "3,0", "moves": 0, "tokens": ["f1"] }]
+    }
+  },
+  {
+    "name": "ice_tie_prefers_ice",
+    "question": "ice",
+    "grid": ["SZ.", "..F"],
+    "code": "3.2.0.ice_tie_pr...:,s1.,z5.3,f1.",
+    "solution": "..:",
+    "alternatives": "routes R,R,D (via ice) and D,R,R (plain) both 3. analyst U,R,D,L order: 2,2,3 via ice",
+    "analystPrediction": {
+      "totalMoves": 3,
+      "blocked": false,
+      "paths": [{ "start": "0,0", "end": "2,1", "moves": 3, "tokens": ["f1", 2, 2, 3, "r"] }]
+    }
+  },
+  {
+    "name": "ice_side_entry",
+    "question": "ice",
+    "grid": ["#.#", "SZ.", "#.F"],
+    "code": "3.3.0.ice_side_e...:,r1.1,r1.,s1.,z5.1,r1.1,f1.",
+    "solution": "..:",
+    "alternatives": "forced through ice: analyst 3 moves (2,2,3)",
+    "analystPrediction": {
+      "totalMoves": 3,
+      "blocked": false,
+      "paths": [{ "start": "0,1", "end": "2,2", "moves": 3, "tokens": ["f1", 2, 2, 3, "r"] }]
+    }
+  },
+  {
+    "name": "ice_vertical",
+    "question": "ice",
+    "grid": ["S#", "Z#", ".F"],
+    "code": "2.3.0.ice_vertic...:,s1.,r1.,z5.,r1.1,f1.",
+    "solution": "..:",
+    "alternatives": "forced: analyst 3 moves (3,3,2)",
+    "analystPrediction": {
+      "totalMoves": 3,
+      "blocked": false,
+      "paths": [{ "start": "0,0", "end": "1,2", "moves": 3, "tokens": ["f1", 3, 3, 2, "r"] }]
+    }
+  },
+  {
+    "name": "ice_dual",
+    "question": "ice",
+    "grid": ["SZ.F", "R..#"],
+    "code": "4.2.0.ice_dual...:,s1.,z5.1,f1.,s2.2,r1.",
+    "solution": "..:",
+    "alternatives": "red tie (via S tile and ice, or around): analyst red=4 tokens 1,2,2,2; green 3",
+    "analystPrediction": {
+      "totalMoves": 7,
+      "blocked": false,
+      "paths": [
+        { "start": "0,0", "end": "3,0", "moves": 3, "tokens": ["f1", 2, 2, 2, "r"] },
+        { "start": "0,1", "end": "3,0", "moves": 4, "tokens": ["f1", 1, 2, 2, 2, "r"] }
+      ]
+    }
+  },
+  {
+    "name": "z1_center",
+    "question": "z1-z4",
+    "grid": ["...", "SkF", "..."],
+    "code": "3.3.0.z1_center...:3,s1.,z1.,f1.",
+    "solution": "..:",
+    "alternatives": "z1 in the middle of a 3x3. analyst treats it as plain: 2 moves (2,2). Directional/conveyor tile would force other routes or change moves; server may also reject the tile",
+    "analystPrediction": {
+      "totalMoves": 2,
+      "blocked": false,
+      "paths": [{ "start": "0,1", "end": "2,1", "moves": 2, "tokens": ["f1", 2, 2, "r"] }]
+    }
+  },
+  {
+    "name": "z2_center",
+    "question": "z1-z4",
+    "grid": ["...", "SlF", "..."],
+    "code": "3.3.0.z2_center...:3,s1.,z2.,f1.",
+    "solution": "..:",
+    "alternatives": "z2 in the middle of a 3x3. analyst treats it as plain: 2 moves (2,2). Directional/conveyor tile would force other routes or change moves; server may also reject the tile",
+    "analystPrediction": {
+      "totalMoves": 2,
+      "blocked": false,
+      "paths": [{ "start": "0,1", "end": "2,1", "moves": 2, "tokens": ["f1", 2, 2, "r"] }]
+    }
+  },
+  {
+    "name": "z3_center",
+    "question": "z1-z4",
+    "grid": ["...", "SmF", "..."],
+    "code": "3.3.0.z3_center...:3,s1.,z3.,f1.",
+    "solution": "..:",
+    "alternatives": "z3 in the middle of a 3x3. analyst treats it as plain: 2 moves (2,2). Directional/conveyor tile would force other routes or change moves; server may also reject the tile",
+    "analystPrediction": {
+      "totalMoves": 2,
+      "blocked": false,
+      "paths": [{ "start": "0,1", "end": "2,1", "moves": 2, "tokens": ["f1", 2, 2, "r"] }]
+    }
+  },
+  {
+    "name": "z4_center",
+    "question": "z1-z4",
+    "grid": ["...", "SnF", "..."],
+    "code": "3.3.0.z4_center...:3,s1.,z4.,f1.",
+    "solution": "..:",
+    "alternatives": "z4 in the middle of a 3x3. analyst treats it as plain: 2 moves (2,2). Directional/conveyor tile would force other routes or change moves; server may also reject the tile",
+    "analystPrediction": {
+      "totalMoves": 2,
+      "blocked": false,
+      "paths": [{ "start": "0,1", "end": "2,1", "moves": 2, "tokens": ["f1", 2, 2, "r"] }]
+    }
+  }
+]

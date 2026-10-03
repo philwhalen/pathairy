@@ -1,0 +1,34 @@
+{
+ "name": "probe_starttie",
+ "code": "6.1.0.S...:,s1.1,c1.1,s1.,f1.",
+ "solution": "..:",
+ "response": {
+  "totalMoves": 5,
+  "blocked": false,
+  "path": [
+   {
+    "start": "0,0",
+    "end": "5,0",
+    "pathArray": [
+     "c1",
+     2,
+     2,
+     "r",
+     "f1",
+     2,
+     2,
+     2,
+     "r"
+    ],
+    "moves": 5,
+    "blocked": false
+   }
+  ],
+  "mapid": -1,
+  "isChallenge": false,
+  "mapcodeExecuted": "6.1.0.S...:,s1.1,c1.1,s1.,f1.",
+  "usedSolution": "..:",
+  "best": 0,
+  "bestby": "no one"
+ }
+}

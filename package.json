@@ -1,0 +1,25 @@
+{
+  "name": "pathery",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "format": "prettier --write .",
+    "oracle:fetch": "node tools/oracle/fetch-analyst.mjs",
+    "oracle:record": "tsx tools/oracle/record.ts",
+    "genstats": "tsx tools/genstats.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "prettier": "^3.9.9",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.2",
+    "vitest": "^5.0.3"
+  }
+}

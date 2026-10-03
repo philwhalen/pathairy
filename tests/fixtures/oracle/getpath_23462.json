@@ -1,0 +1,46 @@
+{
+ "name": "getpath_23462",
+ "code": "13.6.8.Simple...:,s1.11,r3.,r3.1,r1.2,r1.6,r3.,r3.8,r1.2,r3.,r3.1,r1.9,r3.,r3.2,c1.8,f1.,r3.2,r1.,r1.,r1.6,r3.",
+ "solution": "..:",
+ "response": {
+  "totalMoves": 16,
+  "blocked": false,
+  "path": [
+   {
+    "start": "0,0",
+    "end": "12,4",
+    "pathArray": [
+     "c1",
+     2,
+     2,
+     2,
+     3,
+     3,
+     3,
+     3,
+     "r",
+     "f1",
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     "r"
+    ],
+    "moves": 16,
+    "blocked": false
+   }
+  ],
+  "mapid": 23462,
+  "isChallenge": false,
+  "mapcodeExecuted": "13.6.8.Simple...:,s1.11,r3.,r3.1,r1.2,r1.6,r3.,r3.8,r1.2,r3.,r3.1,r1.9,r3.,r3.2,c1.8,f1.,r3.2,r1.,r1.,r1.6,r3.",
+  "usedSolution": "..:",
+  "best": "48",
+  "bestby": "vzl[pi]",
+  "mybest": "0"
+ }
+}

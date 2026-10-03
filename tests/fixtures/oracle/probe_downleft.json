@@ -1,0 +1,35 @@
+{
+ "name": "probe_downleft",
+ "code": "5.5.0.D...:4,s1.15,f1.",
+ "solution": "..:",
+ "response": {
+  "totalMoves": 8,
+  "blocked": false,
+  "path": [
+   {
+    "start": "4,0",
+    "end": "0,4",
+    "pathArray": [
+     "f1",
+     3,
+     3,
+     3,
+     3,
+     4,
+     4,
+     4,
+     4,
+     "r"
+    ],
+    "moves": 8,
+    "blocked": false
+   }
+  ],
+  "mapid": -1,
+  "isChallenge": false,
+  "mapcodeExecuted": "5.5.0.D...:4,s1.15,f1.",
+  "usedSolution": "..:",
+  "best": 0,
+  "bestby": "no one"
+ }
+}

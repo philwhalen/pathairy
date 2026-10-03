@@ -1,0 +1,75 @@
+{
+ "name": "probe_dual3cp",
+ "code": "7.3.0.T...:,s1.1,c1.1,c2.1,c3.7,s2.5,f1.",
+ "solution": "..:",
+ "response": {
+  "totalMoves": 26,
+  "blocked": false,
+  "path": [
+   {
+    "start": "0,0",
+    "end": "6,2",
+    "pathArray": [
+     "c1",
+     2,
+     2,
+     "r",
+     "c2",
+     2,
+     2,
+     "r",
+     "c3",
+     2,
+     2,
+     "r",
+     "f1",
+     3,
+     3,
+     "r"
+    ],
+    "moves": 8,
+    "blocked": false
+   },
+   {
+    "start": "0,2",
+    "end": "6,2",
+    "pathArray": [
+     "c3",
+     1,
+     1,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     "r",
+     "c2",
+     4,
+     4,
+     "r",
+     "c1",
+     4,
+     4,
+     "r",
+     "f1",
+     2,
+     2,
+     2,
+     2,
+     3,
+     3,
+     "r"
+    ],
+    "moves": 18,
+    "blocked": false
+   }
+  ],
+  "mapid": -1,
+  "isChallenge": false,
+  "mapcodeExecuted": "7.3.0.T...:,s1.1,c1.1,c2.1,c3.7,s2.5,f1.",
+  "usedSolution": "..:",
+  "best": 0,
+  "bestby": "no one"
+ }
+}

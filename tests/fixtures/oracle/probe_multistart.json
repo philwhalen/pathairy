@@ -1,0 +1,28 @@
+{
+ "name": "probe_multistart",
+ "code": "3.3.0.M...:,s1.2,f1.,s1.2,f1.,s1.2,f1.",
+ "solution": "..:",
+ "response": {
+  "totalMoves": 1,
+  "blocked": false,
+  "path": [
+   {
+    "start": "0,0",
+    "end": "0,1",
+    "pathArray": [
+     "f1",
+     3,
+     "r"
+    ],
+    "moves": 1,
+    "blocked": false
+   }
+  ],
+  "mapid": -1,
+  "isChallenge": false,
+  "mapcodeExecuted": "3.3.0.M...:,s1.2,f1.,s1.2,f1.,s1.2,f1.",
+  "usedSolution": "..:",
+  "best": 0,
+  "bestby": "no one"
+ }
+}

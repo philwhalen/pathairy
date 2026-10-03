@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<html xml:lang='en' lang='en'>
+<head>
+	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+	<title>Pathery</title>
+
+	<link href='css/page.css?v=050513.css' rel='stylesheet' type='text/css' />
+	<link href='css/maps.css?v=20180724.css' rel='stylesheet' type='text/css' />
+	<link rel="image_src" type="image/png" href="/images/linkdsp.png" />
+	<link rel="icon" href="/favicon.ico" type="image/x-icon"/>
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+		<link href="css/stats.css?v=20180724.css" rel="stylesheet" type="text/css" />
+
+	<script src="js/ajax.js" async="async"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<meta name='Description' content='Path lengthening competition inspired by Tower Defense mazing concepts'><script src='js/globe.js?v=20180724.js'></script><script src='js/mapspecs.js?v=20180724.js'></script><script src='js/scores.js?v=20180724.js'></script><script src='js/dateformat.js?v=20180724.js'></script>
+	<script>
+	(function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");b.type="text/javascript";b.async=!0;b.src=("https:"===c.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.1.min.js';d=c.getElementsByTagName("script")[0];d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?
+	g=a[f]=[]:f="mixpanel";g.people=g.people||[];h="disable track track_pageview track_links track_forms register register_once unregister identify name_tag set_config people.identify people.set people.increment".split(" ");for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.1})(document,window.mixpanel||[]);
+	mixpanel.init("24743c6567f831ddfcbbbd3f397e11e4");
+
+	
+    </script>
+
+<script>
+function showSignin() {
+	if (typeof document.getElementById('oid_hidden') !== 'undefined') {
+		document.getElementById('oid_hidden').id = 'oid_wrapper';
+	}
+}
+function hideSignin() {
+	if (typeof document.getElementById('oid_wrapper') !== 'undefined') {
+		document.getElementById('oid_wrapper').id = 'oid_hidden';
+	}
+}
+	var userObj = {"wallColor":false,"wallEmblem":false,"wallOrientation":false,"ID":"-1","accepted":false,"hasInsaneSpeed":false};
+</script>
+
+</head>
+	
+
+
+
+<script src='sounds/script/soundmanager2-nodebug-jsmin.js'></script>
+<script>
+soundManager.setup({
+	url: '/sounds/swf/',
+	flashVersion: 9, // optional: shiny features (default = 8)
+	useFlashBlock: false, // optionally, enable when you're ready to dive in/**
+	onready: function() {
+    // Ready to use; soundManager.createSound() etc. can now be called.
+		soundManager.createSound({id: 'achieve',url: '/sounds/achieve.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'ufoblip', url: '/sounds/ufoblip.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'bling', url: '/sounds/bling.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'blingb', url: '/sounds/blingb.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'charm',url: '/sounds/charm.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'blip',url: '/sounds/blip.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'cap',url: '/sounds/cap.mp3'});
+		soundManager.createSound({id: 'click',url: '/sounds/click.mp3'});
+		soundManager.createSound({id: 'sc',url: '/sounds/transmission.mp3'});
+		soundManager.createSound({id: 'hologram',url: '/sounds/hologram.mp3'});
+		soundManager.createSound({id: 'pit',url: '/sounds/pit.mp3'});
+		soundManager.createSound({id: 'select',url: '/sounds/select.mp3'});
+	}
+});
+</script>
+
+<script type="text/javascript">
+playerWallColor = '';
+playerWallEmblem = '';
+scoresShowNavSideBtns = true;
+</script>
+
+<!-- Advertisement -->
+<script type="text/javascript">
+// use PHP VAR
+
+var showAd;
+if (getCookie("pref_showAd") != "yes") {
+	showAd = "no";
+} else {
+	showAd = "yes";
+}
+
+function adToggle() {
+	var adContainer = document.getElementById("adContainer");
+	var adBtn = document.getElementById("adBtn");
+
+	if (showAd == "yes") {
+		adContainer.setAttribute("class", "adHidden");
+		adBtn.innerHTML = "<a href='javascript:adToggle()'>Show</a>";
+		showAd = "no";
+	} else {
+		adContainer.setAttribute("class", "adContainer");
+		adBtn.innerHTML = "<a href='javascript:adToggle()'>Hide</a>";
+		showAd = "yes";
+	}
+	savePref("showAd", showAd);
+}
+</script>
+
+
+<body><div class='mainContent'><div></div>	<div class="wrapper" id="oid_hidden" >
+			<h2>Sign in</h2>
+			<div id="oid_box">
+				<h2 style="color:#333;">Please sign in using one of the following</h2>
+				<a rel="nofollow" href="https://accounts.google.com/o/oauth2/auth?response_type=code&redirect_uri=https%3A%2F%2Fwww.pathery.com%2Flogin%3Fop%3Dgoogle&client_id=622952176562-cflugrcd6vtuh3cngc8u2kctonmhd6k9.apps.googleusercontent.com&scope=email&access_type=online&approval_prompt=auto&openid.realmhttps%3A%2F%2Fwww.pathery.com%2F"><img id="oid_btn" src="images/btns/signin_Google.png" alt="Sign in with Google" /></a>
+				<a rel="nofollow" href="login?op=facebook"><img id="oid_btn" src="images/btns/signin_Facebook.png" alt="Sign in with Facebook" /></a>
+				<a rel="nofollow" href="login?op=twitter"><img id="oid_btn" src="images/btns/signin_Twitter.png" alt="Sign in with Twitter" /></a>
+				<a rel="nofollow" href="login?op=yahoo"><img id="oid_btn" src="images/btns/signin_Yahoo.png" alt="Sign in with Yahoo" /></a>
+				<a rel="nofollow" href="login?op=live"><img id="oid_btn" src="images/btns/signin_WindowsLive.png" alt="Sign in with Windows Live" /></a>
+
+				<a id="oid_learn" href="http://openid.net/get-an-openid/what-is-openid/"  target="_blank" >Learn more about OpenID</a>
+				<a id="oauth_learn" href="http://oauth.net/about/"  target="_blank" >Learn more about OAuth</a>
+				<a id="oid_cancel" href="javascript:hideSignin();">X</a>
+			</div>
+		</div><div id="topbar"><div id="topbarContent"><a href='home' class='nav selected'>Home</a><a href='scores' class='nav'>Scores</a><a href='tutorial' class='nav'>Tutorial</a><div id='user'><a href='javascript:showSignin();'>Sign in</a>	</div></div></div><div class='topbarSpacer'></div>
+<div class="wrapper">
+
+<br />
+
+<center>New to Pathery? <a href='tutorial'>Start Here!</a></center>
+	<br /><center>July 20th - Minor update
+<br />This update was just some bug fixes. E.G. the tutorial should now successfully complete.
+<br />Useful links: <a href='/faq#ice'>Ice Tiles Explained</a>. <a href='https://discord.gg/4XDZrbf'>The Discord</a>
+(I'll find a place for this link soon...)
+<br />Thanks for playing Pathery!
+<br />
+<br />
+</center>	<div id="difficulties">		<a href='javascript:showStats(1)' id='dl-1'>Simple</a>
+		<a href='javascript:showStats(2)' id='dl-2'>Normal</a>
+		<a href='javascript:showStats(3)' id='dl-3'>Complex</a>
+		<a href='javascript:showStats(4)' id='dl-4'>Centralized</a>
+		<a href='javascript:showStats(5)' id='dl-5'>Ultra Complex Unlimited</a>
+
+	</div>
+	<div style="clear: both"></div>
+	<noscript>Sorry, this game requires scripts to run. Please enable javascript and <a href='home'>Reload this site</a>
+	<br />This game is best viewed in <a href='http://www.google.com/chrome'>Google Chrome</a>
+	</noscript>
+
+	<div id="yms-1" class='hidden-maps'>	<div class='wrapper'>		<div style='text-align: center;'>			<div style='display:inline-block;margin: 0 auto;text-align: left;'>			<a href='javascript:requestSol("23462");'><strong>Load your best solution</strong></a><br /><div id='innerMapDsp_23462'>
+</div>
+<script>displayMap(23462, 'innerMapDsp_23462', false, '..:', '0');</script>		</div></div>		<div style='padding-top: 20px;'>
+<div class='scoreContainer2' style='position:relative;' id='23462,dspScore'>
+</div>
+<script>scoresShowPage(1, 23462);</script>
+			</div>	</div></div><div style="clear: both"></div><div id="yms-2" class='hidden-maps'>	<div class='wrapper'>		<div style='text-align: center;'>			<div style='display:inline-block;margin: 0 auto;text-align: left;'>			<a href='javascript:requestSol("23463");'><strong>Load your best solution</strong></a><br /><div id='innerMapDsp_23463'>
+</div>
+<script>displayMap(23463, 'innerMapDsp_23463', false, '..:', '0');</script>		</div></div>		<div style='padding-top: 20px;'>
+<div class='scoreContainer2' style='position:relative;' id='23463,dspScore'>
+</div>
+<script>scoresShowPage(1, 23463);</script>
+			</div>	</div></div><div style="clear: both"></div><div id="yms-3" class='hidden-maps'>	<div class='wrapper'>		<div style='text-align: center;'>			<div style='display:inline-block;margin: 0 auto;text-align: left;'>			<a href='javascript:requestSol("23464");'><strong>Load your best solution</strong></a><br /><div id='innerMapDsp_23464'>
+</div>
+<script>displayMap(23464, 'innerMapDsp_23464', false, '..:', '0');</script>		</div></div>		<div style='padding-top: 20px;'>
+<div class='scoreContainer2' style='position:relative;' id='23464,dspScore'>
+</div>
+<script>scoresShowPage(1, 23464);</script>
+			</div>	</div></div><div style="clear: both"></div><div id="yms-4" class='hidden-maps'>	<div class='wrapper'>		<div style='text-align: center;'>			<div style='display:inline-block;margin: 0 auto;text-align: left;'>			<a href='javascript:requestSol("23465");'><strong>Load your best solution</strong></a><br /><div id='innerMapDsp_23465'>
+</div>
+<script>displayMap(23465, 'innerMapDsp_23465', false, '..:', '0');</script>		</div></div>		<div style='padding-top: 20px;'>
+<div class='scoreContainer2' style='position:relative;' id='23465,dspScore'>
+</div>
+<script>scoresShowPage(1, 23465);</script>
+			</div>	</div></div><div style="clear: both"></div><div id="yms-5" class='hidden-maps'>	<div class='wrapper'>		<div style='text-align: center;'>			<div style='display:inline-block;margin: 0 auto;text-align: left;'>			<a href='javascript:requestSol("23445");'><strong>Load your best solution</strong></a><br /><div id='innerMapDsp_23445'>
+</div>
+<script>displayMap(23445, 'innerMapDsp_23445', false, '..:', '0');</script>		</div></div>		<div style='padding-top: 20px;'>
+<div class='scoreContainer2' style='position:relative;' id='23445,dspScore'>
+</div>
+<script>scoresShowPage(1, 23445);</script>
+			</div>	</div></div><div style="clear: both"></div>
+	<div>
+		<span id="countdown" title="This time is relative to your computer's clock">Loading...</span>
+	</div>
+	<script type="text/javascript">
+	var countdownInt = self.setInterval(countdown, 1000);
+
+	//We're counting down to "tomorrow"
+	var tomorrow = new Date();
+	tomorrow.setTime(tomorrow.getTime() + 47639 * 1000);
+	var formatedTomorrow = tomorrow.format("ddd h:MM TT");
+
+	var nextWeeklyMap = new Date();
+	nextWeeklyMap.setTime(nextWeeklyMap.getTime() + 177239 * 1000);
+	var formattedNextWeeklyMap = nextWeeklyMap.format("ddd h:MM TT");
+
+	var userConfirm = true;
+
+	function millisecondsToTimeString(time)
+	{
+		//Ugh, this is a mess.
+		time = time / 1000;
+		if (time < 1)
+			window.clearInterval(countdownInt);
+
+		var hours = time/3600;
+		var days = (hours >= 24 ? hours/24 : 0);
+		var hoursStr = addZero(hours%24);
+		var daysStr = addZero(days);
+
+		time = time%3600;
+		var minutesStr = addZero(time/60);
+
+		time = time%60;
+		var secondsStr = addZero(time);
+
+		var timeStr = "";
+		if(days > 0)
+			timeStr += daysStr + ":";
+		timeStr += hoursStr + ":" + minutesStr + ":" + secondsStr;
+
+		return timeStr;
+	}
+
+	function countdown()
+	{
+		var isWeeklyMap = (document.getElementById("dl-" + 5).className.indexOf('selected') >= 0);
+
+		var newMapStr;
+		if(isWeeklyMap)
+		{
+			var timerem = nextWeeklyMap.getTime() - new Date().getTime();
+			newMapStr = 'New weekly map: ' + formattedNextWeeklyMap + '<br />Time remaining: ' + millisecondsToTimeString(timerem);
+		}
+		else
+		{
+			var timerem = tomorrow.getTime() - new Date().getTime();
+			newMapStr = 'New maps: ' + formatedTomorrow + '<br />Time remaining: ' + millisecondsToTimeString(timerem);
+		}
+
+		document.getElementById("countdown").innerHTML = newMapStr;
+		//TODO: It would not be very hard to dynamically load the new map w/o refresh.
+		if (timerem <= 1000 && userConfirm == true) {
+			userConfirm = confirm("It's Tomorrow Today! Go to new maps?")
+			if (userConfirm) {
+				location.reload(true);
+			}
+		}
+	}
+
+	function addZero(num) {
+		num = Math.floor(num);
+		var numStr = num + '';
+		if (numStr.length < 2)
+			numStr = "0" + numStr;
+		return numStr;
+	}
+	</script>
+</div>
+
+<script>
+
+var jmid=new Array();
+	jmid[0] = '1';
+jmid[1] = '23462';
+jmid[2] = '23463';
+jmid[3] = '23464';
+jmid[4] = '23465';
+jmid[5] = '23445';
+
+function showStats(type) {
+	for (var i = 1; i < jmid.length; i++) {
+		var elem = document.getElementById("yms-" + i);
+		elem.className = elem.className.replace('shown-maps', 'hidden-maps');
+		elem = document.getElementById("dl-" + i);
+		elem.className = elem.className.replace('selected', '');
+	}
+	elem = document.getElementById("yms-" + type);
+	elem.className = elem.className.replace('hidden-maps', 'shown-maps');
+	elem = document.getElementById("dl-" + type);
+	if (elem.className.indexOf('selected') < 0)
+		elem.className += 'selected';
+
+	scoresRequestPage(jmid[type], currentPage[jmid[type]]);
+}
+showStats(1);
+</script>
+
+
+<div style='clear:both'></div><div class='footerPush'></div></div> <!-- /mainContent -->	<div class='footerArea'><div class='divide'></div>		<div><ul id='triple'><li><a href='tutorial'>Tutorial</a></li><li><a href='faq'>FAQ</a></li><li><a href='members'>Member List</a></li><li><a href='chat'>Chat</a></li><li><a href='scores'>Scores</a></li><li><a href='about'>About Us</a></li><li><a href='feedback'>Contact Us</a></li><li><a href='#top'>Back to Top</a></li><li><a href='privacy'>Privacy Policy</a></li>		</ul></div>
+		<div class='copyAndButtons'>
+			<div id='copy'>
+				Copyright &copy; 2011-2018 pathery.com
+			</div>
+			<div id='socialButtons' class='buttons'>
+				<a href='http://www.reddit.com/r/Pathery' target='top' title='Reddit'><img alt='Reddit' src='images/btns/reddit.png' /></a>
+				<a href='https://twitter.com/Pathery' target='top' title='Twitter'><img alt='Twitter' src='images/btns/twitter.png' /></a>
+			</div>
+		</div>
+		
+		<! -- Image Preload -->
+		<div style='visibility:hidden;display:none'>
+			<img src='images/MedalGoldCAR.png' alt=''>
+			<img src='images/MedalSilverCAR.png' alt=''>
+			<img src='images/paths/Path1-1.png' alt=''>
+			<img src='images/paths/Path1-2.png' alt=''>
+			<img src='images/paths/Path1-3.png' alt=''>
+			<img src='images/paths/Path1-4.png' alt=''>
+			<img src='images/paths/Path2-1.png' alt=''>
+			<img src='images/paths/Path2-2.png' alt=''>
+			<img src='images/paths/Path2-3.png' alt=''>
+			<img src='images/paths/Path2-4.png' alt=''>
+			<img src='images/OverlayTileFaceted50.png' alt=''>
+			<img src='images/OverlayTileFaceted30.png' alt=''>
+			<img src='images/OverlayTileFaceted10.png' alt=''>
+			<img src='images/OverlayTileFaceted20.png' alt=''>
+
+			<img src='images/OverlayFinish50c.png' alt=''>
+			<img src='images/OverlayStart50b.png' alt=''>
+
+			<img src='images/OverlayStart2.png' alt=''>
+
+			<img src='images/OverlayTile10.png' alt=''>
+
+			<img src='images/OverlayA50.png' alt=''>
+			<img src='images/OverlayB50.png' alt=''>
+			<img src='images/OverlayC50.png' alt=''>
+			<img src='images/TeleportOutW.png' alt=''>
+			<img src='images/TeleportInW.png' alt=''>
+		</div>
+	
+    <script>
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-371072-3']);
+    _gaq.push(['_trackPageview']);
+
+	WebFontConfig = {
+		google: {
+			families: ['Cantarell:400,700:latin']
+		}
+	};
+
+	(function() {
+		var proto = document.location.protocol,
+		    s = document.getElementsByTagName('script')[0].parentNode;
+
+		var wf = document.createElement('script');
+		wf.src = ('https:' == proto ? 'https' : 'http') + '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+		wf.type = 'text/javascript';
+		wf.async = 'true';
+		s.appendChild(wf, s);
+
+
+		var ga = document.createElement('script');
+		ga.type = 'text/javascript';
+		ga.async = true;
+        ga.src = ('https:' == proto ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		s.parentNode.appendChild(ga, s);
+	
+    })();
+
+	</script>
+
+	</div><!-- /footerArea -->
+</body>
+</html>
+	

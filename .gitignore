@@ -1,0 +1,6 @@
+node_modules
+dist
+coverage
+*.log
+# unlicensed third-party file, kept locally only (npm run oracle:fetch)
+tools/oracle/analyst.js

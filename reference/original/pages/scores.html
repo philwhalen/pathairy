@@ -1,0 +1,452 @@
+
+<!DOCTYPE html>
+<html xml:lang='en' lang='en'>
+<head>
+	<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+	<title>Scores</title>
+
+	<link href='css/page.css?v=050513.css' rel='stylesheet' type='text/css' />
+	<link href='css/maps.css?v=20180724.css' rel='stylesheet' type='text/css' />
+	<link rel="image_src" type="image/png" href="/images/linkdsp.png" />
+	<link rel="icon" href="/favicon.ico" type="image/x-icon"/>
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+		<link href="css/stats.css?v=20180724.css" rel="stylesheet" type="text/css" />
+
+	<script src="js/ajax.js" async="async"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+		<meta name='Description' content='Score history for Pathery'><script src='js/globe.js?v=20180724.js'></script><script src='js/mapspecs.js?v=20180724.js'></script><script src='js/scores.js?v=20180724.js'></script><script src='js/dateformat.js?v=20180724.js'></script>
+	<script>
+	(function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");b.type="text/javascript";b.async=!0;b.src=("https:"===c.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.1.min.js';d=c.getElementsByTagName("script")[0];d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?
+	g=a[f]=[]:f="mixpanel";g.people=g.people||[];h="disable track track_pageview track_links track_forms register register_once unregister identify name_tag set_config people.identify people.set people.increment".split(" ");for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.1})(document,window.mixpanel||[]);
+	mixpanel.init("24743c6567f831ddfcbbbd3f397e11e4");
+
+	
+    </script>
+
+<script>
+function showSignin() {
+	if (typeof document.getElementById('oid_hidden') !== 'undefined') {
+		document.getElementById('oid_hidden').id = 'oid_wrapper';
+	}
+}
+function hideSignin() {
+	if (typeof document.getElementById('oid_wrapper') !== 'undefined') {
+		document.getElementById('oid_wrapper').id = 'oid_hidden';
+	}
+}
+	var userObj = {"wallColor":false,"wallEmblem":false,"wallOrientation":false,"ID":"-1","accepted":false,"hasInsaneSpeed":false};
+</script>
+
+</head>
+	
+<script type="text/javascript" src="js/jquery.keystrokes.min.js"></script>
+<script type="text/javascript" src="js/jquery.hashchange.min.js"></script>
+
+<script type="text/javascript">
+playerWallColor = '';
+playerWallEmblem = '';
+</script>
+
+<script>
+var startOfPathery = new Date(2011,2,13);
+
+var serverToday = new Date(2026,9,3);
+var serverNow = new Date(1791038772*1000);
+
+var pointerTime = new Date();
+pointerTime.setTime(serverToday.getTime())
+
+var pointerMapID = -1;
+var goToPointer = true;
+var goToScorePointer = true;
+
+$(function(){
+  // Bind the event.
+  $(window).hashchange( function(){
+	 handleHashChange();
+  })
+  // Trigger the event (useful on page load).
+  $(window).hashchange();
+});
+
+function handleHashChange() {
+	var hash = window.location.hash.substring(1);
+	if (hash !== '') {
+		hashParts = hash.split('_')
+		dateSplit = hashParts[0].split("-");
+		if (typeof(hashParts[1]) !== 'undefined') {
+			pointerMapID = hashParts[1];
+		}
+		if (typeof(hashParts[2]) !== 'undefined' && hashParts[2]-0 > 0) {
+			pointerPage = hashParts[2];
+		} else pointerPage = 1;
+		if (typeof(hashParts[3]) !== 'undefined') {
+			pointerSolutionID = hashParts[3];
+		}
+		//+1 because i'm gonna use prev.
+		pointerTime = new Date(dateSplit[0],dateSplit[1]-1,dateSplit[2]-0+1);
+	} 
+	getMapIDs('prev');
+}
+
+
+function addDay(dateObj) {
+	var d = dateObj;
+	d.setDate(d.getDate()+1);
+	return d;
+}
+function minusDay(dateObj) {
+	var d = dateObj;
+	d.setDate(d.getDate()-1);
+	return d;
+}
+
+//Contra
+$(document).bind('keystrokes', {
+keys: ['arrow up', 'arrow up', 'arrow down', 'arrow down', 'arrow left', 'arrow right', 'arrow left', 'arrow right', 'b', 'a', 'enter']
+}, function(){
+alert('You unlocked awesomeness!');
+});
+
+
+function displayMapScores(mapID) {
+	pointerMapID = mapID;
+	updateHash();
+	if (!$('#'+mapID+',dspScore').length) {
+		var newDiv = $('<div/>', {
+			'id': mapID+',dspScore',
+			html: ''
+		});
+		$('#scoreDisplay').empty();
+		newDiv.prependTo('#scoreDisplay');
+	}
+
+	//Set the 'selectedMap' class
+	$('.selectedMap').removeClass('selectedMap');
+	var currentMapDiv = $('#thumb_'+mapID);
+	currentMapDiv.addClass('selectedMap');
+	
+	//Hack: display the "current map" div for currently running maps
+	//Relies on the fact that the #thumb_<mapId> div has a single child with the 'current' class..
+	var showCurrentMapMessage = currentMapDiv.children().hasClass('currentlyRunning');
+	$('#currentlyRunningMessage').toggle(showCurrentMapMessage);
+	
+	$("#mapDisplay").fadeOut('fast');
+	
+	scoresShowPage(pointerPage, mapID);
+	
+	targetWidth = parseInt($('.wrapper').css("width")) - parseInt($('.scoreCol').css("width"));
+	displayMap(mapID, "mapDisplay", targetWidth);
+}
+
+function updateHash() {
+	var tmp = document.location + '';
+	tmp = tmp.split("#");
+	var anchorTag = tmp[0]+'#'+pointerDate;
+	anchorTag += "_"+pointerMapID;
+	if (pointerPage) anchorTag += "_"+pointerPage;
+	else anchorTag += "_";
+	if (pointerSolutionID) anchorTag += "_"+pointerSolutionID;
+	else anchorTag += "_";
+	document.location=anchorTag;
+}
+
+var pointerPage = 1, pointerSolutionID
+function saveScoreLocation(page, solutionID) {
+	pointerPage = page;
+	pointerSolutionID = solutionID;
+	updateHash();
+	//console.log("SaveScoreLoc");
+}
+
+var pointerDate;
+function getMapIDs(request) {
+	switch (request) {
+		case "next":
+		if (pointerTime.getTime() < serverToday.getTime()) {
+			addDay(pointerTime);
+			pointerDate = pointerTime.format("yyyy-mm-dd");
+		} else return;
+		break;
+		case "prev":
+		if (pointerTime.getTime() > startOfPathery.getTime()) {
+			minusDay(pointerTime);
+			pointerDate = pointerTime.format("yyyy-mm-dd");
+		} else return;
+		break;
+	}
+	var timeDisplayPrefix = '';
+	if (pointerTime.getTime() >= serverToday.getTime()) {
+		$('#mapNavRight').removeClass('mapNavActive');
+		$('#mapNavRight').addClass('mapNavDisabled');
+		timeDisplayPrefix = '<i title="(Server Time)">Today </i>';
+	} else {
+		$('#mapNavRight').addClass('mapNavActive');
+		$('#mapNavRight').removeClass('mapNavDisabled');
+	}
+	if (pointerTime.getTime() <= startOfPathery.getTime()) {
+		$('#mapNavLeft').removeClass('mapNavActive');
+		$('#mapNavLeft').addClass('mapNavDisabled');
+		timeDisplayPrefix = '<i title="The start!">Pathery Started </i>';
+	} else {
+		$('#mapNavLeft').addClass('mapNavActive');
+		$('#mapNavLeft').removeClass('mapNavDisabled');
+	}
+	
+	$('#displayDate').html(timeDisplayPrefix+pointerTime.format("dddd, mmmm dS, yyyy"));
+	
+	var urlString = "a/mapsbydate/"+pointerDate+'.js';
+	updateHash();
+	$.ajax({
+		type: "GET",  
+		url: urlString,
+		cache: true,
+		data: '', 
+		fail: function() { alert("error"); },
+		complete: function(data) {getMapIDsResponse(data.responseText);}
+	});
+}
+
+var mapsInNav = new Array();
+function getMapIDsResponse(response) {
+	var json = decryptJSON(response);
+	
+	json.reverse();
+	
+	//Delete removed maps
+	$("#mapNavigation").hide(0);
+	//console.log("going through mapsInNav", mapsInNav);
+	mapsInNav = $.grep(mapsInNav, function(mapID, key) {
+		//console.log("del: compare:", key, mapID, json, jQuery.inArray(mapID, json));
+		if (jQuery.inArray(mapID, json) < 0 && typeof(mapID) != 'undefined') {
+			removeMapFromNav(mapID);
+			return false;
+		} else return true;
+	});
+	
+	//Add non-existing maps
+	//console.log("going through json", json);
+	
+	var lastMapID = 0;
+	$.each(json, function(key, mapID) {
+		//console.log("add: compare:", mapID, mapsInNav);
+		if (jQuery.inArray(mapID, mapsInNav) == -1) {
+			addMapToNav(mapID);
+			lastMapID = mapID;
+		}
+	});
+	if (goToPointer == true && pointerMapID < 0) {
+		pointerMapID = lastMapID;
+	}
+	
+	//Don't queue animations...
+	if ($('#mapNavigation').is(':animated')) {
+		$("#mapNavigation").show(0);
+	} else $("#mapNavigation").fadeIn('300');
+	
+	if (goToPointer == true) {
+		goToPointer = false;
+		displayMapScores(pointerMapID);
+	}
+}
+
+function addMapToNav(mapID) {
+
+	var $newdiv1 = $("<div id='thumb_"+mapID+"'/>");
+	if (pointerMapID + '' == mapID + '') $newdiv1.addClass('selectedMap');
+	$newdiv1.addClass('mapThumbnailOuter');
+
+	$("#mapNavigation").prepend($newdiv1);
+
+	var URLString = 'a/map/'+mapID+'.js';
+	$.ajax({
+		type: "GET",  
+		url: URLString,
+		cache: true,
+		data: '', 
+		fail: function() { alert("error"); },
+		complete: function(data) {
+			var map = decryptJSON(data.responseText);
+			var mapDate = new Date(map.dateExpires*1000);
+			isActive = mapDate.getTime() > serverToday.getTime();
+			
+			$("#thumb_"+mapID).html(formatMapThumbForNav(data.responseText)).show();
+			//$("#thumb_"+mapID).html(mapThumbnailHTML(map, 120, isActive)).show();
+		}
+	});
+	mapsInNav.unshift(mapID);
+}
+
+function formatMapThumbForNav(json) {
+	var map = decryptJSON(json);
+	var mapDate = new Date(map.dateExpires*1000);
+	var mapClass = '';
+	var toolTip = 'Inactive map';
+
+	var isCurrentlyRunning = mapDate.getTime() > serverNow.getTime();
+	
+	if (isCurrentlyRunning) {
+		mapClass = ' currentlyRunning';
+		toolTip = 'This map can still be played.';
+	}
+
+	var r = '';
+	r += "<div class='mapThumbnail"+mapClass+"' title='"+toolTip+"'; onclick='displayMapScores("+map.ID+")'>";
+	r += mapThumbnailHTML(map, 120);
+	r += '</div>';
+	return r;
+}
+
+function removeMapFromNav(mapID) {
+	//console.log("remove map:", mapID, mapsInNav.indexOf(mapID));
+	$("#thumb_"+mapID).hide('fast', function(){ $("#thumb_"+mapID).remove(); });
+}
+
+</script>
+<body>
+
+
+<script src='sounds/script/soundmanager2-nodebug-jsmin.js'></script>
+<script>
+soundManager.setup({
+	url: '/sounds/swf/',
+	flashVersion: 9, // optional: shiny features (default = 8)
+	useFlashBlock: false, // optionally, enable when you're ready to dive in/**
+	onready: function() {
+    // Ready to use; soundManager.createSound() etc. can now be called.
+		soundManager.createSound({id: 'achieve',url: '/sounds/achieve.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'ufoblip', url: '/sounds/ufoblip.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'bling', url: '/sounds/bling.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'blingb', url: '/sounds/blingb.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'charm',url: '/sounds/charm.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'blip',url: '/sounds/blip.mp3',autoLoad: true,volume: 50});
+		soundManager.createSound({id: 'cap',url: '/sounds/cap.mp3'});
+		soundManager.createSound({id: 'click',url: '/sounds/click.mp3'});
+		soundManager.createSound({id: 'sc',url: '/sounds/transmission.mp3'});
+		soundManager.createSound({id: 'hologram',url: '/sounds/hologram.mp3'});
+		soundManager.createSound({id: 'pit',url: '/sounds/pit.mp3'});
+		soundManager.createSound({id: 'select',url: '/sounds/select.mp3'});
+	}
+});
+</script>
+<body><div class='mainContent'><div></div>	<div class="wrapper" id="oid_hidden" >
+			<h2>Sign in</h2>
+			<div id="oid_box">
+				<h2 style="color:#333;">Please sign in using one of the following</h2>
+				<a rel="nofollow" href="https://accounts.google.com/o/oauth2/auth?response_type=code&redirect_uri=https%3A%2F%2Fwww.pathery.com%2Flogin%3Fop%3Dgoogle&client_id=622952176562-cflugrcd6vtuh3cngc8u2kctonmhd6k9.apps.googleusercontent.com&scope=email&access_type=online&approval_prompt=auto&openid.realmhttps%3A%2F%2Fwww.pathery.com%2F"><img id="oid_btn" src="images/btns/signin_Google.png" alt="Sign in with Google" /></a>
+				<a rel="nofollow" href="login?op=facebook"><img id="oid_btn" src="images/btns/signin_Facebook.png" alt="Sign in with Facebook" /></a>
+				<a rel="nofollow" href="login?op=twitter"><img id="oid_btn" src="images/btns/signin_Twitter.png" alt="Sign in with Twitter" /></a>
+				<a rel="nofollow" href="login?op=yahoo"><img id="oid_btn" src="images/btns/signin_Yahoo.png" alt="Sign in with Yahoo" /></a>
+				<a rel="nofollow" href="login?op=live"><img id="oid_btn" src="images/btns/signin_WindowsLive.png" alt="Sign in with Windows Live" /></a>
+
+				<a id="oid_learn" href="http://openid.net/get-an-openid/what-is-openid/"  target="_blank" >Learn more about OpenID</a>
+				<a id="oauth_learn" href="http://oauth.net/about/"  target="_blank" >Learn more about OAuth</a>
+				<a id="oid_cancel" href="javascript:hideSignin();">X</a>
+			</div>
+		</div><div id="topbar"><div id="topbarContent"><a href='home' class='nav'>Home</a><a href='scores' class='nav selected'>Scores</a><a href='tutorial' class='nav'>Tutorial</a><div id='user'><a href='javascript:showSignin();'>Sign in</a>	</div></div></div><div class='topbarSpacer'></div>
+<div class="wrapper">
+
+	<div id='displayDate'>
+	Loading...
+	</div>
+
+	<div class='mapNavCon'>
+		<a id='mapNavLeft' class='mapNavLeft mapNavActive unselectable' href='javascript:getMapIDs("prev");'>&lt;</a>
+		<a id='mapNavRight' class='mapNavRight mapNavActive unselectable' href='javascript:getMapIDs("next");'>&gt;</a>
+		<div class='mapNavCenter'>
+			<div id='mapNavigation'></div>
+		</div>
+	</div>
+	<div id="currentlyRunningMessage"><span>This map hasn't completed yet, so points/solutions are not available</span></div>
+	<div style='clear:both'></div>
+	<div>
+		<div class='scoreCol' id='scoreDisplay'></div>
+		<div class="mapCol" id='mapDisplay' style='display:none; float:left;'></div>
+	</div>
+	
+	
+	<div style='clear:both'></div>
+</div>
+
+<!--
+<script src="sounds/script/soundmanager.js"></script>
+<script type="text/javascript">soundManagerInit();</script>
+-->
+<div style='clear:both'></div><div class='footerPush'></div></div> <!-- /mainContent -->	<div class='footerArea'><div class='divide'></div>		<div><ul id='triple'><li><a href='tutorial'>Tutorial</a></li><li><a href='faq'>FAQ</a></li><li><a href='members'>Member List</a></li><li><a href='chat'>Chat</a></li><li><a href='scores'>Scores</a></li><li><a href='about'>About Us</a></li><li><a href='feedback'>Contact Us</a></li><li><a href='#top'>Back to Top</a></li><li><a href='privacy'>Privacy Policy</a></li>		</ul></div>
+		<div class='copyAndButtons'>
+			<div id='copy'>
+				Copyright &copy; 2011-2018 pathery.com
+			</div>
+			<div id='socialButtons' class='buttons'>
+				<a href='http://www.reddit.com/r/Pathery' target='top' title='Reddit'><img alt='Reddit' src='images/btns/reddit.png' /></a>
+				<a href='https://twitter.com/Pathery' target='top' title='Twitter'><img alt='Twitter' src='images/btns/twitter.png' /></a>
+			</div>
+		</div>
+		
+		<! -- Image Preload -->
+		<div style='visibility:hidden;display:none'>
+			<img src='images/MedalGoldCAR.png' alt=''>
+			<img src='images/MedalSilverCAR.png' alt=''>
+			<img src='images/paths/Path1-1.png' alt=''>
+			<img src='images/paths/Path1-2.png' alt=''>
+			<img src='images/paths/Path1-3.png' alt=''>
+			<img src='images/paths/Path1-4.png' alt=''>
+			<img src='images/paths/Path2-1.png' alt=''>
+			<img src='images/paths/Path2-2.png' alt=''>
+			<img src='images/paths/Path2-3.png' alt=''>
+			<img src='images/paths/Path2-4.png' alt=''>
+			<img src='images/OverlayTileFaceted50.png' alt=''>
+			<img src='images/OverlayTileFaceted30.png' alt=''>
+			<img src='images/OverlayTileFaceted10.png' alt=''>
+			<img src='images/OverlayTileFaceted20.png' alt=''>
+
+			<img src='images/OverlayFinish50c.png' alt=''>
+			<img src='images/OverlayStart50b.png' alt=''>
+
+			<img src='images/OverlayStart2.png' alt=''>
+
+			<img src='images/OverlayTile10.png' alt=''>
+
+			<img src='images/OverlayA50.png' alt=''>
+			<img src='images/OverlayB50.png' alt=''>
+			<img src='images/OverlayC50.png' alt=''>
+			<img src='images/TeleportOutW.png' alt=''>
+			<img src='images/TeleportInW.png' alt=''>
+		</div>
+	
+    <script>
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-371072-3']);
+    _gaq.push(['_trackPageview']);
+
+	WebFontConfig = {
+		google: {
+			families: ['Cantarell:400,700:latin']
+		}
+	};
+
+	(function() {
+		var proto = document.location.protocol,
+		    s = document.getElementsByTagName('script')[0].parentNode;
+
+		var wf = document.createElement('script');
+		wf.src = ('https:' == proto ? 'https' : 'http') + '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+		wf.type = 'text/javascript';
+		wf.async = 'true';
+		s.appendChild(wf, s);
+
+
+		var ga = document.createElement('script');
+		ga.type = 'text/javascript';
+		ga.async = true;
+        ga.src = ('https:' == proto ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		s.parentNode.appendChild(ga, s);
+	
+    })();
+
+	</script>
+
+	</div><!-- /footerArea -->
+</body>
+</html>
+	
