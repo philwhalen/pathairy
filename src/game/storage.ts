@@ -17,6 +17,8 @@ export interface Prefs {
   speed: Speed;
   /** Map key of the last map played ("normal-123456"). */
   lastMap: string | null;
+  /** Sound effects off. */
+  mute: boolean;
 }
 
 /** How a finished run compares with the stored best, before it is saved. */
@@ -32,7 +34,7 @@ export interface KeyValueStore {
 }
 
 const PREFIX = 'pathery.';
-const DEFAULT_PREFS: Prefs = { speed: 'med', lastMap: null };
+const DEFAULT_PREFS: Prefs = { speed: 'med', lastMap: null, mute: false };
 
 function browserStorage(): KeyValueStore | null {
   try {
@@ -82,6 +84,7 @@ export class GameStorage {
     return {
       speed: isSpeed(p.speed) ? p.speed : DEFAULT_PREFS.speed,
       lastMap: typeof p.lastMap === 'string' ? p.lastMap : DEFAULT_PREFS.lastMap,
+      mute: typeof p.mute === 'boolean' ? p.mute : DEFAULT_PREFS.mute,
     };
   }
 

@@ -18,6 +18,8 @@ export interface ControlHandlers {
   reset(): void;
   setSpeed(speed: Speed): void;
   loadBest(): void;
+  daily(): void;
+  setMute(mute: boolean): void;
 }
 
 export type Tone = 'info' | 'good' | 'warn';
@@ -46,6 +48,7 @@ export class Controls {
   private readonly typeButtons = new Map<MapType, HTMLButtonElement>();
   private readonly typePrefix: HTMLElement;
   private readonly seedInput: HTMLInputElement;
+  private readonly dailyTag: HTMLElement;
   private readonly wallsCount: HTMLElement;
   private readonly wallsBudget: HTMLElement;
   private readonly wallsBox: HTMLElement;
@@ -60,7 +63,7 @@ export class Controls {
   private readonly message: HTMLElement;
   private messageTimer = 0;
 
-  constructor(root: HTMLElement, h: ControlHandlers, speed: Speed) {
+  constructor(root: HTMLElement, h: ControlHandlers, speed: Speed, muted: boolean) {
     // Header
     const brand = el('h1', { className: 'brand' }, 'Pathery');
     const typeNav = el('div', { className: 'new-map' });
@@ -74,7 +77,18 @@ export class Controls {
       typeNav.append(b);
     }
 
+    const dailyBtn = el('button', {
+      type: 'button',
+      className: 'chip daily',
+      textContent: 'Daily',
+    });
+    dailyBtn.title = "Today's map for this type (same for everyone, one per day)";
+    dailyBtn.addEventListener('click', () => h.daily());
+    typeNav.append(dailyBtn);
+
     this.typePrefix = el('span', { className: 'seed-type' });
+    this.dailyTag = el('span', { className: 'daily-tag', textContent: 'Daily' });
+    this.dailyTag.hidden = true;
     this.seedInput = el('input', { className: 'seed-input', id: 'seed' });
     this.seedInput.inputMode = 'numeric';
     this.seedInput.autocomplete = 'off';
@@ -86,6 +100,7 @@ export class Controls {
       el('label', { className: 'seed-label', textContent: 'Seed' }),
       this.typePrefix,
       this.seedInput,
+      this.dailyTag,
       el('button', { type: 'submit', className: 'chip', textContent: 'Load' }),
     );
     (seedForm.querySelector('label') as HTMLLabelElement).htmlFor = 'seed';
@@ -142,6 +157,24 @@ export class Controls {
     this.resetBtn = el('button', { type: 'button', className: 'chip', textContent: 'Reset' });
     this.resetBtn.addEventListener('click', () => h.reset());
 
+    this.goBtn.title = 'Go (G)';
+    this.undoBtn.title = 'Undo (Ctrl+Z)';
+    this.resetBtn.title = 'Reset (R)';
+    for (const [t, b] of this.typeButtons) b.title = `New ${t} map (N)`;
+
+    const muteBtn = el('button', { type: 'button', className: 'chip mute' });
+    const showMute = (m: boolean) => {
+      muteBtn.textContent = m ? 'Sound off' : 'Sound on';
+      muteBtn.setAttribute('aria-pressed', String(m));
+      muteBtn.title = m ? 'Turn sound effects on' : 'Turn sound effects off';
+    };
+    showMute(muted);
+    muteBtn.addEventListener('click', () => {
+      const m = muteBtn.getAttribute('aria-pressed') !== 'true';
+      showMute(m);
+      h.setMute(m);
+    });
+
     const speedBox = el('fieldset', { className: 'speed' }, el('legend', { textContent: 'Speed' }));
     for (const s of SPEEDS) {
       const input = el('input', { type: 'radio' });
@@ -158,18 +191,35 @@ export class Controls {
       this.goBtn,
       el('div', { className: 'edit' }, this.undoBtn, this.resetBtn),
       speedBox,
+      muteBtn,
     );
 
     this.message = el('p', { className: 'message' });
     this.message.setAttribute('role', 'status');
 
-    const main = el('main', { className: 'play' }, hud, this.boardSlot, this.message, actions);
+    const hint = el('p', { className: 'hint' });
+    hint.append(
+      ...['G', 'R', 'Ctrl+Z', 'N'].flatMap((k, i) => [
+        el('kbd', { textContent: k }),
+        ` ${['go', 'reset', 'undo', 'new map'][i]}${i < 3 ? '  ' : ''}`,
+      ]),
+    );
+    const main = el(
+      'main',
+      { className: 'play' },
+      hud,
+      this.boardSlot,
+      this.message,
+      actions,
+      hint,
+    );
     root.replaceChildren(header, main);
   }
 
-  setMap(type: MapType, seed: number): void {
+  setMap(type: MapType, seed: number, daily = false): void {
     for (const [t, b] of this.typeButtons) b.setAttribute('aria-pressed', String(t === type));
     this.typePrefix.textContent = `${type}-`;
+    this.dailyTag.hidden = !daily;
     this.seedInput.value = String(seed);
   }
 

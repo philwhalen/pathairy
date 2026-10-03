@@ -8,6 +8,7 @@ import { parseSolution } from './engine/mapcode';
 import type { Coord, PathsResult } from './engine/types';
 import { generateMap, parseMapKey, randomSeed } from './generator/generate';
 import type { GeneratedMap, MapType } from './generator/generate';
+import { dailySeed, dateString, isDaily } from './game/daily';
 import { GameState } from './game/state';
 import { GameStorage } from './game/storage';
 import type { RunVerdict } from './game/storage';
@@ -15,12 +16,15 @@ import { PathPlayer, targetName } from './ui/animate';
 import type { Speed } from './ui/animate';
 import { Board } from './ui/board';
 import { Controls } from './ui/controls';
+import { installShortcuts } from './ui/shortcuts';
+import { Sound } from './ui/sound';
 
 const DEFAULT_TYPE: MapType = 'normal';
 const FLASH_MS = 2200;
 
 const storage = new GameStorage();
 let speed: Speed = storage.getPrefs().speed;
+const sound = new Sound(storage.getPrefs().mute);
 let current: GeneratedMap;
 let game: GameState;
 /** The last run's per-path moves, shown (dimmed) until the next run. */
@@ -55,8 +59,16 @@ const controls = new Controls(
       storage.setPrefs({ speed: s });
     },
     loadBest: () => actions.loadBest(),
+    daily: () => actions.daily(),
+    setMute(mute) {
+      sound.muted = mute;
+      storage.setPrefs({ mute });
+      sound.unlock();
+      sound.play('tick');
+    },
   },
   speed,
+  sound.muted,
 );
 controls.boardSlot.append(board.el);
 
@@ -106,7 +118,7 @@ function load(g: GeneratedMap): void {
   game = new GameState(g.map, g.key);
   lastMoves = null;
   board.render(g.map);
-  controls.setMap(g.type, g.seed);
+  controls.setMap(g.type, g.seed, isDaily(g.type, g.seed));
   controls.setRunning(false);
   controls.setMoves(null);
   controls.say('');
@@ -157,6 +169,16 @@ const actions = {
     loadByKey(type, randomSeed());
   },
 
+  /** Today's map of the current type. */
+  daily(): void {
+    const seed = dailySeed(current.type, dateString());
+    if (current.seed === seed) {
+      controls.say("That's already today's map.", 'info', FLASH_MS);
+      return;
+    }
+    loadByKey(current.type, seed);
+  },
+
   loadKey(text: string): void {
     const t = text.trim();
     const key = /^\d+$/.test(t) ? `${current.type}-${t}` : t;
@@ -185,6 +207,7 @@ const actions = {
   },
 
   go(): void {
+    sound.unlock();
     stopRun();
     const result = computePaths(game.map, game.walls);
     if (result.blocked) {
@@ -205,14 +228,17 @@ const actions = {
         if (Math.floor(total / 100) > lastHundred) {
           lastHundred = Math.floor(total / 100);
           controls.pulseMoves();
+          sound.play('tick');
         }
       },
+      onEvent: (kind) => sound.play(kind === 'reach' ? 'checkpoint' : 'teleport'),
       onDone() {
         const verdict = storage.recordRun(game.key, result.totalMoves, solution);
         lastMoves = result.paths.map((p) => p.moves);
         controls.setMoves(lastMoves);
         controls.setRunning(false);
         controls.say(...verdictMessage(verdict));
+        if (verdict.kind === 'new') sound.play('best');
         refresh();
       },
     });
@@ -246,6 +272,15 @@ const actions = {
     controls.say(`Loaded your best solution (${best.moves} moves). Press Go to watch it.`);
   },
 };
+
+// Shortcuts call the same actions as the buttons. (Any key press also unlocks audio.)
+installShortcuts((a) => {
+  sound.unlock();
+  if (a === 'go') actions.go();
+  else if (a === 'reset') actions.reset();
+  else if (a === 'undo') actions.undo();
+  else actions.newMap(current.type);
+});
 
 // Startup: ?map= first, then the last map played, then a new map.
 function start(): void {

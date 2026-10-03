@@ -163,6 +163,8 @@ export interface AnimationSurface {
 export interface PlayCallbacks {
   /** Moves so far per path, after every frame. */
   onProgress(moves: number[]): void;
+  /** A target was reached or a teleport entered (for sound effects). Optional. */
+  onEvent?(kind: 'reach' | 'teleport'): void;
   /** All paths finished (not called when cancelled). */
   onDone(): void;
 }
@@ -217,6 +219,7 @@ export class PathPlayer {
         const f = frames[i];
         if (!f) return finishOne();
         this.draw(f, pathIndex);
+        if (f.kind === 'reach' || f.kind === 'teleport') cb.onEvent?.(f.kind);
         moves[pathIndex] = f.moves;
         cb.onProgress(moves.slice());
         this.schedule(() => step(i + 1), i + 1 < frames.length ? frameDelay(f, this.speed()) : 0);

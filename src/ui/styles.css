@@ -705,3 +705,47 @@ input {
     transition-duration: 0.15s;
   }
 }
+
+/* Daily tag, shortcut hint */
+
+.daily-tag {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.daily-tag[hidden] {
+  display: none;
+}
+
+.chip.daily {
+  margin-left: 8px;
+}
+
+.hint {
+  margin: 2px 0 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-soft);
+  white-space: pre-wrap;
+}
+
+.hint kbd {
+  padding: 0 5px;
+  border: 1px solid var(--stone);
+  border-radius: 4px;
+  background: var(--open);
+  font: inherit;
+  font-size: 12px;
+}
+
+@media (hover: none) {
+  .hint {
+    display: none;
+  }
+}

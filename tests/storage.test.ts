@@ -41,29 +41,29 @@ describe('GameStorage', () => {
   it('persists to the backing store and reads it back in a new session', () => {
     const store = new FakeStore();
     new GameStorage(store).recordRun('normal-5', 40, '.0,1.:');
-    new GameStorage(store).setPrefs({ speed: 'ultra', lastMap: 'normal-5' });
+    new GameStorage(store).setPrefs({ speed: 'ultra', lastMap: 'normal-5', mute: true });
     const s = new GameStorage(store);
     expect(s.getBest('normal-5')).toEqual({ moves: 40, solution: '.0,1.:' });
-    expect(s.getPrefs()).toEqual({ speed: 'ultra', lastMap: 'normal-5' });
+    expect(s.getPrefs()).toEqual({ speed: 'ultra', lastMap: 'normal-5', mute: true });
   });
 
   it('has default prefs and merges updates', () => {
     const s = new GameStorage(new FakeStore());
-    expect(s.getPrefs()).toEqual({ speed: 'med', lastMap: null });
+    expect(s.getPrefs()).toEqual({ speed: 'med', lastMap: null, mute: false });
     s.setPrefs({ lastMap: 'complex-9' });
     s.setPrefs({ speed: 'slow' });
-    expect(s.getPrefs()).toEqual({ speed: 'slow', lastMap: 'complex-9' });
+    expect(s.getPrefs()).toEqual({ speed: 'slow', lastMap: 'complex-9', mute: false });
   });
 
   it('ignores corrupt or foreign data', () => {
     const store = new FakeStore();
     store.setItem('pathery.best.simple-1', '{not json');
     store.setItem('pathery.best.simple-2', '{"moves":"12","solution":3}');
-    store.setItem('pathery.prefs', '{"speed":"warp","lastMap":7}');
+    store.setItem('pathery.prefs', '{"speed":"warp","lastMap":7,"mute":"yes"}');
     const s = new GameStorage(store);
     expect(s.getBest('simple-1')).toBeNull();
     expect(s.getBest('simple-2')).toBeNull();
-    expect(s.getPrefs()).toEqual({ speed: 'med', lastMap: null });
+    expect(s.getPrefs()).toEqual({ speed: 'med', lastMap: null, mute: false });
   });
 
   it('works in memory when storage throws or is missing', () => {
