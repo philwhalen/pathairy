@@ -93,8 +93,8 @@ Each phase ends with its tests passing. Phases 1–3 involve no UI.
 - [x] Phase 6 — mute/speed/last-map prefs, Web Audio blips (mutable), G/R/N/Ctrl+Z shortcuts,
       Daily mode (`{type}-{seed}` key, seed hashed from local date + type), 2026-10-03
 - [ ] Phase 7 — solver (optional). Deferred to a later step by Phil. A partial solver core
-  (`src/solver/solve.ts`, `tools/solve.ts`, tests) is parked on branch `wip/solver`. It
-  typechecks and its tests pass, but tuning and the scoreboard benchmark weren't finished.
+      (`src/solver/solve.ts`, `tools/solve.ts`, tests) is parked on branch `wip/solver`. It
+      typechecks and its tests pass, but tuning and the scoreboard benchmark weren't finished.
 
 ### Phase 0: Scaffold
 
