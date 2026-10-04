@@ -108,3 +108,77 @@ downloaded yet. Still improving when stopped.
   may help later phases.
 - _Explained variance_ rises to 0.95: the value head predicts the return-to-go well, as you'd
   expect with deterministic dynamics and a per-map reward scale.
+
+## Phase 4 — PPO generalist, four generated types (2026-10-04, overnight, branch `ml/phase-4`, not reviewed yet)
+
+Also run on native Windows, with the same venv as Phase 3. No new code: the `train_ppo.py` flags it
+uses (`--init-from`, `--gpu-mem-fraction`, `--resume`) already went in with the Phase 3 commit.
+
+**Setup** (`ml/runs/std-init`)
+
+- One checkpoint for Simple, Normal, Complex and Centralized, all in a 9×19 frame (the largest
+  of the four types). Training maps: 632k (generated seeds plus site samples, flips and jitter).
+- Eval: 200 held-out generated maps per type, ratio to SA at 3 s. Mean references: 40.5 / 81.8
+  / 210.0 / 191.3.
+- Initialized from the Phase 3 Simple checkpoint, using the same 6 × 64 net. The net is
+  frame-size independent, so the weights load into the bigger frame unchanged.
+- 512 envs × 32 steps, batch 4096, lr 2e-4, other settings as in Phase 3.
+- Types are mixed uniformly from the start. The plan's curriculum and "oversample the weakest
+  type" sampler, and its bigger net, were **not** done (see below).
+
+**Result:** stopped by the overnight deadline at 59.8M steps (227 min, ~4.4k steps/s).
+
+| Policy (ratio to SA reference: mean / min / at-ref) | Simple             | Normal             | Complex            | Centralized        |
+| --------------------------------------------------- | ------------------ | ------------------ | ------------------ | ------------------ |
+| Greedy baseline                                     | 0.598              | 0.605              | 0.559              | 0.531              |
+| Phase 3 Simple specialist, deterministic            | 0.977 / 0.76 / 69% |                    |                    |                    |
+| Phase 3 Simple specialist, best of 64               | 0.989 / 0.76 / 83% |                    |                    |                    |
+| Generalist at start (= Phase 3 weights)             | 0.966              | 0.789              | 0.565              | 0.647              |
+| **Generalist, deterministic** (54M, best.zip)       | 0.963 / 0.64 / 58% | 0.931 / 0.58 / 25% | 0.785 / 0.47 / 3%  | 0.887 / 0.55 / 7%  |
+| Generalist, best of 16 samples                      | 0.981 / 0.76 / 73% | 0.964 / 0.64 / 40% | 0.873 / 0.58 / 4%  | 0.938 / 0.57 / 20% |
+| Generalist, best of 64 samples                      | 0.988 / 0.82 / 81% | 0.973 / 0.64 / 50% | 0.900 / 0.58 / 9%  | 0.949 / 0.58 / 29% |
+| Generalist, last checkpoint (59.8M), deterministic  | 0.960              | 0.932              | 0.789              | 0.882              |
+
+Best-of-K is K sampled episodes per map, keeping the best one. That's 22 s for 200 Complex
+maps at K = 64 on the GPU, a cheap stand-in for search.
+
+`best.zip` was chosen by these same eval sets, so its numbers are slightly optimistic. The last
+checkpoint, which wasn't selected, is within ±0.005, so the bias is small. The validation split
+(history maps, batch A) still needs downloading to do this properly.
+
+**Reading it**
+
+- Phase 4's "done when" is met: one checkpoint plays all four types, with policy-only results
+  per type. As the plan expected, it trails SA most on Complex (0.785 policy-only).
+- Simple barely moved: 0.966 → 0.963, while Normal +0.14, Complex +0.22, Centralized +0.24.
+  There was no catastrophic forgetting.
+- Gains were flattening when the run stopped. Over the last 20M steps: Normal +0.005,
+  Complex +0.01, Centralized +0.02 (eval noise is about ±0.005).
+- Sampling helps most on Complex: +0.115 from best-of-64, against +0.025 on Simple. The
+  policy's first choice is often wrong there, but a good line is usually in its top
+  candidates. That's the case for search (Phase 5).
+- Curves (`tb_summary ml/runs/std-init`) look healthier than Phase 3. Entropy settles at
+  about −0.40, approx KL at 0.03–0.04, clip fraction about 0.10, explained variance 0.93.
+  lr 2e-4 versus 3e-4 roughly halved the KL early on.
+
+**Bigger net (not done).** A 10 × 96 net from scratch (`ml/runs/std-big`, 1.75M parameters)
+had to drop to batch 1024 to fit next to the main run. It shared the GPU and cut both runs'
+throughput, so I stopped it at 512k steps (best 0.28; nothing learned about size yet). The plan
+item "net grows to 10–12 blocks × 96–128" is still open. Do it when the GPU isn't shared.
+Initializing from the 6 × 64 weights would need a net-surgery step.
+
+**Lesson: Windows VRAM spill.** When two runs together exceed VRAM, the Windows driver
+silently pages GPU memory to system RAM instead of failing. Throughput fell from ~5k to ~330
+steps/s with no error. Fix: `--gpu-mem-fraction` (`torch.cuda.set_per_process_memory_fraction`),
+which turns the spill into a clean OOM. I also dropped `cudnn.benchmark`, whose autotuning
+workspaces made the spill worse. WSL behaves the same way (it shares the Windows driver), so
+keep the flag.
+
+**Next (open Phase 4 items, before or alongside Phase 5)**
+
+1. Download batch A and validate against humans (Phase 1 is still not done; it needs Phil's
+   "yes").
+2. Weakest-type sampler: oversample Complex.
+3. Bigger net on an otherwise idle GPU.
+4. Entropy: Phase 3's early collapse didn't recur from the warm start, but an entropy schedule
+   is still untested.
