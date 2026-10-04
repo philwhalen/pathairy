@@ -110,11 +110,13 @@ struct VecEnv {
     rng: Rng,
     frame_h: usize,
     frame_w: usize,
+    /// Env i always plays map i % pool size (for evaluation) instead of a random map.
+    fixed: bool,
 }
 
 impl VecEnv {
     fn new_episode(&mut self, i: usize) -> PyResult<()> {
-        let k = self.rng.below(self.pool.len());
+        let k = if self.fixed { i % self.pool.len() } else { self.rng.below(self.pool.len()) };
         self.map_idx[i] = k;
         self.envs[i] = PatheryEnv::new(self.pool[k].clone(), self.frame_h, self.frame_w, self.scales[k])
             .map_err(PyValueError::new_err)?;
@@ -136,10 +138,11 @@ impl VecEnv {
 
 #[pymethods]
 impl VecEnv {
-    /// `codes`: the map pool (each episode draws one uniformly). `scales`: optional per-map
-    /// reward scale (default: each map's no-walls score).
+    /// `codes`: the map pool (each episode draws one uniformly, or with `fixed` env i always
+    /// plays map i % len). `scales`: optional per-map reward scale (default: each map's no-walls
+    /// score).
     #[new]
-    #[pyo3(signature = (codes, n_envs, frame_h = 19, frame_w = 27, seed = 0, scales = None))]
+    #[pyo3(signature = (codes, n_envs, frame_h = 19, frame_w = 27, seed = 0, scales = None, fixed = false))]
     fn new(
         codes: Vec<String>,
         n_envs: usize,
@@ -147,6 +150,7 @@ impl VecEnv {
         frame_w: usize,
         seed: u64,
         scales: Option<Vec<f32>>,
+        fixed: bool,
     ) -> PyResult<Self> {
         if codes.is_empty() || n_envs == 0 {
             return Err(PyValueError::new_err("need at least one map and one env"));
@@ -172,6 +176,7 @@ impl VecEnv {
             rng: Rng::new(seed),
             frame_h,
             frame_w,
+            fixed,
         };
         for i in 0..n_envs {
             v.new_episode(i)?;

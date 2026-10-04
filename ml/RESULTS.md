@@ -60,3 +60,51 @@ wrong on teleport maps. Details and the fix (`Engine::support_cells`) are in
   `min(left, 255)` instead of a fraction.
 - Default reward scale = the no-walls score. The plan's choice (greedy score) is available:
   `VecEnv(..., scales=[...])` with `pathery_rs.greedy(code)[0]`.
+
+## Phase 3 — PPO on Simple (2026-10-04, overnight, branch `ml/phase-3`, not reviewed yet)
+
+**Run on native Windows**, not WSL: Phil OK'd GPU use for the night and WSL isn't installed yet.
+PyTorch 2.14 + CUDA 13, SB3 2.9 / sb3-contrib 2.9 in a throwaway venv; no `torch.compile`. All
+code is plain Python and should run unchanged in WSL.
+
+**Setup**
+
+- `ml/pathery_rl/vec_env.py`: SB3 `VecEnv` over the Rust batched env (one Rust call per step).
+  Plane bounds are declared exactly, which also stops SB3 treating the planes as an image.
+- `ml/pathery_rl/policy.py`: fully convolutional net (6 residual blocks × 64 channels, global
+  pooling bias every 3rd block, 481k parameters). Per-cell logits from a 1×1 conv, STOP and
+  value from pooled features. It is frame-size independent, so Simple trained in a 6×13 frame
+  (instead of padding to 19×27), and the weights load into any frame later.
+- Training maps: 154k Simple maps (20k generated seeds + 20 site samples, 4 flips each, 1
+  jitter variant each), `tools/dump-maps.ts`.
+- Evaluation: 200 held-out generated Simple maps (other seeds), reference = Rust SA at 3 s
+  (which matched the best human on all 20 historical Simple maps). Deterministic policy, one
+  pass. No history maps were used.
+- MaskablePPO: 256 envs × 32 steps, batch 2048, 4 epochs, lr 3e-4, γ = 1, λ = 0.95, clip 0.2,
+  entropy 0.01.
+
+**Result:** stopped at 16.2M steps (31 min, ~8.7k steps/s, GPU-bound on many tiny kernels).
+
+| Player (Simple eval set, ratio to SA reference) | Mean  | Min   | At reference |
+| ----------------------------------------------- | ----- | ----- | ------------ |
+| Random legal walls                              | 0.446 |       |              |
+| Greedy (best single wall, repeated)             | 0.598 |       |              |
+| Policy, 0.2M steps                              | 0.849 | 0.429 | 11%          |
+| Policy, 3M steps                                | 0.933 | 0.511 | 39%          |
+| Policy, 3M steps, best of 64 samples            | 0.977 | 0.826 | 69%          |
+| **Policy, 16M steps (final)**                   | 0.977 | 0.758 | 69%          |
+
+Phase 3's bar ("beats greedy, ≥ 0.95 mean ratio") is met by 6M steps, measured against the SA
+reference on generated maps. The plan's bar is against humans on validation maps, which aren't
+downloaded yet. Still improving when stopped.
+
+**What the curves say** (`python -m ml.pathery_rl.tb_summary ml/runs/simple-v1`):
+
+- _Entropy_ collapses within the first ~1M steps (−3.99 → −0.43) and then decays slowly to
+  −0.29. The policy commits early; sampling still helps a lot (best-of-64 adds +0.04 at 3M).
+  Worth trying a higher entropy coefficient or an entropy schedule.
+- _Approx KL_ sits at 0.04–0.06 with _clip fraction_ 0.10–0.14. That's high for PPO (0.01–0.02
+  is typical), so updates are large. Training stayed stable, but a lower lr or `target_kl`
+  may help later phases.
+- _Explained variance_ rises to 0.95: the value head predicts the return-to-go well, as you'd
+  expect with deterministic dynamics and a per-map reward scale.

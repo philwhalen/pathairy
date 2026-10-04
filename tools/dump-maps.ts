@@ -2,7 +2,8 @@
  * Training map corpus for the RL agent (docs/rl-agent-plan.md §4.2, Phase 1 step 3): writes
  * JSONL rows `{id, type, source, code}`.
  *
- *   npx tsx tools/dump-maps.ts [--per-type 1000] [--seed0 1000000] [--transforms] [--jitter 2]
+ *   npx tsx tools/dump-maps.ts [--per-type 1000] [--seed0 1000000] [--types simple,normal,...]
+ *                              [--transforms] [--jitter 2]
  *                              [--site] [--max-w 27] [--max-h 19] [--out ml/data/train-maps.jsonl]
  *
  * Sources:
@@ -37,6 +38,7 @@ const SITE = args.includes('--site');
 const MAX_W = Number(flag('max-w') ?? 27);
 const MAX_H = Number(flag('max-h') ?? 19);
 const OUT = flag('out') ?? 'ml/data/train-maps.jsonl';
+const TYPES = (flag('types') ?? MAP_TYPES.join(',')).split(',');
 
 const rows: string[] = [];
 const seen = new Set<string>();
@@ -70,7 +72,7 @@ function withVariants(id: string, type: string, source: string, map: MapData, rn
 }
 
 const rng = createRng(SEED0);
-for (const type of MAP_TYPES) {
+for (const type of MAP_TYPES.filter((t) => TYPES.includes(t))) {
   for (let i = 0; i < PER_TYPE; i++) {
     const seed = SEED0 + i;
     withVariants(`${type}-${seed}`, type, 'generator', generateMap(type, seed).map, rng);
@@ -83,6 +85,7 @@ if (SITE) {
     .sort()) {
     const map = mapJsonToMapData(JSON.parse(readFileSync(new URL(f, dir), 'utf8')));
     const type = f.replace(/_\d+\.json$/, '');
+    if (!TYPES.includes(type)) continue;
     withVariants(`site-${f.replace('.json', '')}`, type, 'site-sample', map, rng);
   }
 }

@@ -15,3 +15,5 @@ __pycache__
 # Generated map dumps and fetch control files (ml/data/)
 ml/data/*.jsonl
 ml/data/fetch.*
+ml/runs
+ml/data/eval-*.json
