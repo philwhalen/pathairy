@@ -3,8 +3,9 @@
  *
  * Algorithm (iterated simulated annealing over wall sets):
  *  - Construction: randomized greedy. Repeatedly add the wall that lengthens the path most,
- *    choosing among cells on the current path (a wall that does not touch the path never changes
- *    the score on its own, see `pathCells`).
+ *    choosing among cells on the current path (on maps without teleports a wall that does not
+ *    touch the path never changes the score on its own, see `pathCells`; with teleports it can,
+ *    through which exit is nearest, so this is a heuristic there).
  *  - Annealing runs of fixed length (in evaluations). The main move ("relocate") removes a
  *    random wall, re-traces the path, and puts the wall back on the best of a few cells of the new
  *    path; the rest add a wall on the path (when under budget), move a wall onto the path, shift
