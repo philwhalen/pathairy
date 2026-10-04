@@ -15,6 +15,12 @@ export interface BestRecord {
   solution: string;
 }
 
+/** The solver's best for a map (the "AI best" target). */
+export interface AiRecord extends BestRecord {
+  /** Solver version that produced it; records from other versions are recomputed. */
+  version: number;
+}
+
 export interface Prefs {
   speed: Speed;
   /** Map key of the last map played ("normal-123456"). */
@@ -78,6 +84,24 @@ export class GameStorage {
     if (best && moves < best.moves) return { kind: 'below', moves, best: best.moves };
     this.write(`best.${mapKey}`, JSON.stringify({ moves, solution } satisfies BestRecord));
     return { kind: 'new', moves, previous: best ? best.moves : null };
+  }
+
+  getAi(mapKey: string, version: number): AiRecord | null {
+    const v = this.readJson(`ai.${mapKey}`) as Partial<AiRecord> | null;
+    if (
+      v &&
+      typeof v === 'object' &&
+      v.version === version &&
+      Number.isInteger(v.moves) &&
+      typeof v.solution === 'string'
+    ) {
+      return { moves: v.moves!, solution: v.solution, version };
+    }
+    return null;
+  }
+
+  putAi(mapKey: string, rec: AiRecord): void {
+    this.write(`ai.${mapKey}`, JSON.stringify(rec));
   }
 
   getPrefs(): Prefs {

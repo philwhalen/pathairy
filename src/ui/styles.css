@@ -194,6 +194,44 @@ input {
   flex-basis: 100%;
 }
 
+.hud-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.stat.ai {
+  justify-content: flex-end;
+  text-align: right;
+  font-size: 13px;
+}
+
+.stat.ai strong {
+  font-size: 17px;
+  color: var(--ink-soft);
+}
+
+.stat.ai.thinking strong {
+  animation: ai-think 1.2s ease-in-out infinite;
+}
+
+.stat.ai .link {
+  flex-basis: 100%;
+}
+
+@keyframes ai-think {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stat.ai.thinking strong {
+    animation: none;
+  }
+}
+
 .stat.walls.empty strong {
   color: var(--red);
 }

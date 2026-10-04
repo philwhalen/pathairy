@@ -4,7 +4,7 @@
  */
 import './ui/styles.css';
 import { computePaths } from './engine/pathing';
-import { parseMapCode, parseSolution } from './engine/mapcode';
+import { parseMapCode, parseSolution, serializeSolution } from './engine/mapcode';
 import type { Coord, MapData, PathsResult } from './engine/types';
 import { generateMap, mapKey, parseMapKey, randomSeed } from './generator/generate';
 import type { GeneratedMap, MapType } from './generator/generate';
@@ -20,7 +20,9 @@ import {
 import type { SiteMapInfo } from './game/pathery';
 import { GameState } from './game/state';
 import { GameStorage } from './game/storage';
-import type { RunVerdict } from './game/storage';
+import type { BestRecord, RunVerdict } from './game/storage';
+import { SOLVER_VERSION } from './solver/solve';
+import { AiRunner } from './ui/ai';
 import { PathPlayer, targetName } from './ui/animate';
 import type { Speed } from './ui/animate';
 import { Board } from './ui/board';
@@ -30,6 +32,8 @@ import { Sound } from './ui/sound';
 
 const DEFAULT_TYPE: MapType = 'normal';
 const FLASH_MS = 2200;
+/** How long the solver works on each new map for the "AI best" target. */
+const AI_TIME_MS = 5000;
 
 const storage = new GameStorage();
 let speed: Speed = storage.getPrefs().speed;
@@ -41,6 +45,11 @@ let mapType: MapType = DEFAULT_TYPE;
 let game: GameState;
 /** The last run's per-path moves, shown (dimmed) until the next run. */
 let lastMoves: number[] | null = null;
+const ai = new AiRunner();
+/** The AI's result for the current map once it has finished (null while thinking or unavailable). */
+let aiBest: BestRecord | null = null;
+/** The solver's best so far while it is still thinking. */
+let aiThinking: number | null = null;
 
 const board = new Board({
   strokeStart(c) {
@@ -71,6 +80,7 @@ const controls = new Controls(
       storage.setPrefs({ speed: s });
     },
     loadBest: () => actions.loadBest(),
+    loadAi: () => actions.loadAi(),
     daily: () => actions.daily(),
     setMute(mute) {
       sound.muted = mute;
@@ -115,6 +125,38 @@ function refresh(): void {
   controls.setEditState(game.canUndo, game.walls.length > 0);
   const best = storage.getBest(game.key);
   controls.setBest(best?.moves ?? null, !!best && !sameWalls(best.solution));
+  if (aiBest) controls.setAi(aiBest.moves, false, !sameWalls(aiBest.solution));
+  else controls.setAi(aiThinking, aiThinking !== null, false);
+}
+
+/** Shows the stored AI target for the map on the board, or starts the solver on it. */
+function startAi(): void {
+  const key = game.key;
+  aiBest = storage.getAi(key, SOLVER_VERSION);
+  aiThinking = null;
+  if (aiBest) {
+    ai.cancel();
+    return;
+  }
+  ai.start(game.map, AI_TIME_MS, (u) => {
+    if (game.key !== key) return;
+    if (u.done) {
+      aiBest = { moves: u.moves, solution: serializeSolution(u.walls) };
+      aiThinking = null;
+      storage.putAi(key, { ...aiBest, version: SOLVER_VERSION });
+    } else {
+      aiThinking = u.moves;
+    }
+    refresh();
+  });
+}
+
+/** How a finished run compares with the AI target (empty if there is none yet). */
+function aiComparison(moves: number): string {
+  if (!aiBest) return '';
+  if (moves > aiBest.moves) return ` You beat the AI's ${aiBest.moves}!`;
+  if (moves === aiBest.moves) return ' You matched the AI.';
+  return ` AI best: ${aiBest.moves}.`;
 }
 
 function sameWalls(solution: string): boolean {
@@ -155,6 +197,7 @@ function show(key: string, map: MapData, site: SiteMapInfo | null): void {
   controls.setRunning(false);
   controls.setMoves(null);
   controls.say('');
+  startAi();
   refresh();
   storage.setPrefs({ lastMap: key });
   try {
@@ -329,11 +372,18 @@ const actions = {
       },
       onEvent: (kind) => sound.play(kind === 'reach' ? 'checkpoint' : 'teleport'),
       onDone() {
-        const verdict = storage.recordRun(game.key, result.totalMoves, solution);
         lastMoves = result.paths.map((p) => p.moves);
         controls.setMoves(lastMoves);
         controls.setRunning(false);
-        controls.say(...verdictMessage(verdict));
+        if (aiBest && sameWalls(aiBest.solution)) {
+          // The AI's own walls don't count as the player's best.
+          controls.say(`The AI's solution: ${result.totalMoves} moves.`, 'info');
+          refresh();
+          return;
+        }
+        const verdict = storage.recordRun(game.key, result.totalMoves, solution);
+        const [text, tone] = verdictMessage(verdict);
+        controls.say(text + aiComparison(result.totalMoves), tone);
         if (verdict.kind === 'new') sound.play('best');
         refresh();
       },
@@ -366,6 +416,22 @@ const actions = {
     }
     refresh();
     controls.say(`Loaded your best solution (${best.moves} moves). Press Go to watch it.`);
+  },
+
+  loadAi(): void {
+    if (!aiBest) return;
+    stopRun();
+    let ok = false;
+    try {
+      ok = game.load(parseSolution(aiBest.solution));
+    } catch {
+      ok = false;
+    }
+    if (!ok) return;
+    refresh();
+    controls.say(
+      `The AI's walls (${aiBest.moves} moves). Press Go to watch, or Undo to get yours back.`,
+    );
   },
 };
 

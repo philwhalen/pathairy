@@ -89,12 +89,16 @@ Each phase ends with its tests passing. Phases 1–3 involve no UI.
   showed the Complex gap was noise (median 42 local vs 45 site); no extra site filter found.
   Waiting on map review with Phil.
 - [~] Phase 5 — UI done: play loop on all 4 types, desktop + 375 px, checked in headless
-  Chrome. Not browser-tested yet: dual paths, ice, x tiles. Waiting on playtest with Phil.
+  Chrome. Dual paths, ice, `x`/`p` tiles and teleports checked in headless Chrome on pathery.com
+  maps 23432, 23435, 23438, 23449 (2026-10-03). Waiting on playtest with Phil.
 - [x] Phase 6 — mute/speed/last-map prefs, Web Audio blips (mutable), G/R/N/Ctrl+Z shortcuts,
       Daily mode (`{type}-{seed}` key, seed hashed from local date + type), 2026-10-03
-- [ ] Phase 7 — solver (optional). Deferred to a later step by Phil. A partial solver core
-      (`src/solver/solve.ts`, `tools/solve.ts`, tests) is parked on branch `wip/solver`. It
-      typechecks and its tests pass, but tuning and the scoreboard benchmark weren't finished.
+- [x] Phase 7 — solver, 2026-10-03 (overnight, not yet reviewed by Phil). The `wip/solver` core
+      is merged, plus an "AI best" target in the UI (Web Worker, 5 s per map, stored per map
+      key), `tools/tune-solver.ts` (tuning on maps outside the scoreboard), a parameter sweep
+      (the defaults stayed: no change beat them), and the genstats difficulty comparison. Results
+      in "Phase 7 results" below. Also browser-tested dual paths, ice, `x` and `p` tiles (Phase 5
+      gap) on four pathery.com maps, desktop and 375 px.
 
 ### Phase 0: Scaffold
 
@@ -242,6 +246,59 @@ See §6 for the parameters. `generateMap(type, seed)`:
 - Hill-climbing or simulated-annealing wall placer using the fast engine. Show an "AI best"
   as a target to beat for each map, and use it in genstats to compare difficulty with the site's samples
   (we can also score the 80 sampled maps with the same solver).
+
+#### Phase 7 results (2026-10-03)
+
+**What was built**
+
+- `src/solver/solve.ts`: iterated simulated annealing over wall sets (the `wip/solver` core,
+  unchanged except for `SOLVER_VERSION`). Deterministic for a seed and evaluation count;
+  resumable (`createSolver().step(ms)`), so it runs in a Web Worker.
+- UI: `src/solver/worker.ts` + `src/ui/ai.ts`. On every map the solver runs for 5 s in a worker,
+  and the HUD shows "AI thinking… N" and then "AI best N" with a "Show AI walls" link (undoable).
+  The result is stored as `ai.{mapKey}` with the solver version, so it is computed once per map.
+  After a run the message adds "You beat the AI's N!", "You matched the AI." or "AI best: N."
+  Running the AI's own walls doesn't count as the player's best.
+- `tools/tune-solver.ts`: tuning benchmark on 84 maps that are **not** in the scoreboard
+  (generated maps of the 4 types, 16 site Complex samples, and two tuning-only presets in
+  `tools/solver-bench/maps.ts`: "large" = 27×19 with 999 walls like Ultra, "mid" = 21×15 with
+  ~30 walls like Thirty). Scores are ratios to the best score ever found per map
+  (`tools/solver-bench/best-known.json`, built from 30 s and 120 s runs). This keeps the
+  scoreboard held out, as docs/rl-agent-plan.md §1 requires.
+- `generateFromPreset(preset, seed)` in the generator (used by the tuning presets).
+
+**Tuning:** a sweep of 20 single-parameter changes at 2 s/map (3 seeds each), then the best two
+re-checked with 6 seeds. Every change landed within ±0.005 of the defaults, which is the noise
+level. The defaults stay (overall 0.951 of best-known at 2 s on 18 parallel jobs; Simple 1.000,
+Normal 0.997, Complex 0.963, Centralized 0.983, site Complex 0.970, mid 0.878, large 0.813).
+More time helps much more than parameters: on the tuning set, 30 s runs reach ~0.99.
+
+**Two experiments that didn't help, for large unlimited-wall boards:** (1) relocate moves that
+prefer walls next to the path; (2) starting from random tree mazes (they score ~400 vs ~1,400 for
+annealing on the large preset, and annealing from them ends no better). The solver settles at
+~100 walls forming a forced corridor and can't reach the hundreds-of-walls mazes humans build.
+That needs coordinated multi-wall moves. It is the gap the RL plan targets.
+
+**Held-out benchmark** (`tools/solve.ts --scoreboard`, 83 daily maps 2026-09-13…10-02, ratio =
+solver / best human; run once, not tuned on):
+
+| Time/map | Mean ratio | Matched or beat | Simple | Normal | Complex (median / min) | Ultra (median) |
+| -------- | ---------- | --------------- | ------ | ------ | ---------------------- | -------------- |
+| 2 s      | 0.959      | 53 / 83         | 1.000  | 1.000  | 0.993 / 0.842          | 0.559          |
+| 10 s     | 0.976      | 63 / 83         | 1.000  | 1.000  | 1.000 / 0.892          | 0.577          |
+
+**Difficulty vs the site's samples** (`npm run genstats -- 1000 --solver-ms 2000 --solver-maps 60`;
+solver best at 2 s per map, 60 local maps per type vs every site sample):
+
+| Type        | Local median / mean | Site median / mean | Ratio of means | Solved ÷ no-walls (local / site) |
+| ----------- | ------------------- | ------------------ | -------------- | -------------------------------- |
+| Simple      | 40 / 40.6           | 41 / 41.1 (n=20)   | 0.99           | 2.41 / 2.50                      |
+| Normal      | 82 / 85.5           | 73 / 83.8 (n=20)   | 1.02           | 3.51 / 3.65                      |
+| Complex     | 203 / 208.9         | 203 / 209.0 (n=80) | 1.00           | 5.02 / 4.75                      |
+| Centralized | 190 / 189.8         | 188 / 191.8 (n=60) | 0.99           | 6.00 / 5.71                      |
+
+So by the solver's measure the generated maps are as hard as the site's (means within 2%). The
+Normal median gap (82 vs 73) comes from only 20 site samples; the means agree.
 
 ## 5. Engine: matching the site
 

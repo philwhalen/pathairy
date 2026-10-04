@@ -47,6 +47,21 @@ describe('GameStorage', () => {
     expect(s.getPrefs()).toEqual({ speed: 'ultra', lastMap: 'normal-5', mute: true });
   });
 
+  it('keeps the AI best per map and drops records from other solver versions', () => {
+    const store = new FakeStore();
+    const s = new GameStorage(store);
+    expect(s.getAi('complex-1', 1)).toBeNull();
+    s.putAi('complex-1', { moves: 250, solution: '.1,1.:', version: 1 });
+    expect(new GameStorage(store).getAi('complex-1', 1)).toEqual({
+      moves: 250,
+      solution: '.1,1.:',
+      version: 1,
+    });
+    expect(s.getAi('complex-1', 2)).toBeNull();
+    store.setItem('pathery.ai.complex-2', '{"moves":"x","solution":".1,1.:","version":1}');
+    expect(s.getAi('complex-2', 1)).toBeNull();
+  });
+
   it('has default prefs and merges updates', () => {
     const s = new GameStorage(new FakeStore());
     expect(s.getPrefs()).toEqual({ speed: 'med', lastMap: null, mute: false });

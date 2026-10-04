@@ -1,7 +1,7 @@
 import type { Coord, MapData, Tile, TileType } from '../engine/types';
 import { computePaths } from '../engine/pathing';
 import { MAP_TYPES, PRESETS } from './presets';
-import type { MapType, Region, Weighted } from './presets';
+import type { MapType, Preset, Region, Weighted } from './presets';
 import { createRng } from './rng';
 import type { Rng } from './rng';
 
@@ -39,8 +39,7 @@ export function parseMapKey(key: string): { type: MapType; seed: number } | null
 const tile = (type: TileType, value = 1): Tile => ({ type, value });
 
 /** Fixed layout of a type: borders plus start/finish. */
-function emptyGrid(type: MapType, rng: Rng): Tile[][] {
-  const p = PRESETS[type];
+function emptyGrid(p: Preset, rng: Rng): Tile[][] {
   const tiles = Array.from({ length: p.height }, () =>
     Array.from({ length: p.width }, () => tile('o')),
   );
@@ -80,9 +79,8 @@ function place(tiles: Tile[][], rng: Rng, region: Region, t: Tile): boolean {
   return true;
 }
 
-function roll(type: MapType, rng: Rng): MapData {
-  const p = PRESETS[type];
-  const tiles = emptyGrid(type, rng);
+function roll(p: Preset, rng: Rng): MapData {
+  const tiles = emptyGrid(p, rng);
   const count = (w: Weighted[]) => rng.weighted(w);
 
   const nCp = count(p.checkpoints.count);
@@ -116,12 +114,19 @@ function roll(type: MapType, rng: Rng): MapData {
  * candidate passes validation (no walls placed, every target reachable).
  */
 export function generateMap(type: MapType, seed: number): GeneratedMap {
+  const { map, attempts } = generateFromPreset(PRESETS[type], seed);
+  return { key: mapKey(type, seed), type, seed, map, attempts };
+}
+
+/** Same as generateMap for any preset (e.g. the solver's tuning-only presets). */
+export function generateFromPreset(
+  preset: Preset,
+  seed: number,
+): { map: MapData; attempts: number } {
   const rng = createRng(seed);
   for (let attempts = 1; attempts <= MAX_ATTEMPTS; attempts++) {
-    const map = roll(type, rng);
-    if (!computePaths(map, []).blocked) {
-      return { key: mapKey(type, seed), type, seed, map, attempts };
-    }
+    const map = roll(preset, rng);
+    if (!computePaths(map, []).blocked) return { map, attempts };
   }
-  throw new Error(`No valid ${type} map for seed ${seed} after ${MAX_ATTEMPTS} attempts`);
+  throw new Error(`No valid ${preset.name} map for seed ${seed} after ${MAX_ATTEMPTS} attempts`);
 }

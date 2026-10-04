@@ -18,6 +18,8 @@ export interface ControlHandlers {
   reset(): void;
   setSpeed(speed: Speed): void;
   loadBest(): void;
+  /** Put the AI's walls on the board. */
+  loadAi(): void;
   daily(): void;
   setMute(mute: boolean): void;
   /** Download (or reuse) pathery.com's maps for today. */
@@ -66,6 +68,10 @@ export class Controls {
   private readonly bestBox: HTMLElement;
   private readonly bestValue: HTMLElement;
   private readonly loadBestBtn: HTMLButtonElement;
+  private readonly aiBox: HTMLElement;
+  private readonly aiValue: HTMLElement;
+  private readonly aiLabel: HTMLElement;
+  private readonly loadAiBtn: HTMLButtonElement;
   private readonly goBtn: HTMLButtonElement;
   private readonly undoBtn: HTMLButtonElement;
   private readonly resetBtn: HTMLButtonElement;
@@ -172,7 +178,24 @@ export class Controls {
       el('span', { className: 'stat-label', textContent: 'best' }),
       this.loadBestBtn,
     );
-    const hud = el('section', { className: 'hud' }, this.wallsBox, this.moves, this.bestBox);
+    this.aiValue = el('strong', { className: 'num' });
+    this.aiLabel = el('span', { className: 'stat-label' });
+    this.loadAiBtn = el('button', {
+      type: 'button',
+      className: 'link',
+      textContent: 'Show AI walls',
+    });
+    this.loadAiBtn.addEventListener('click', () => h.loadAi());
+    this.aiBox = el('div', { className: 'stat ai' }, this.aiValue, this.aiLabel, this.loadAiBtn);
+    this.aiBox.title = 'Best score the built-in solver found for this map: a target to beat';
+    this.aiBox.hidden = true;
+    const hud = el(
+      'section',
+      { className: 'hud' },
+      this.wallsBox,
+      this.moves,
+      el('div', { className: 'hud-right' }, this.bestBox, this.aiBox),
+    );
 
     this.boardSlot = el('div', { className: 'board-slot' });
 
@@ -346,6 +369,18 @@ export class Controls {
     this.bestBox.hidden = best === null;
     this.bestValue.textContent = best === null ? '' : String(best);
     this.loadBestBtn.hidden = !canLoad;
+  }
+
+  /**
+   * The AI target: `null` hides it. While `thinking`, the number is the solver's best so far.
+   * `canLoad` offers to put its walls on the board.
+   */
+  setAi(moves: number | null, thinking: boolean, canLoad: boolean): void {
+    this.aiBox.hidden = moves === null;
+    this.aiBox.classList.toggle('thinking', thinking);
+    this.aiValue.textContent = moves === null ? '' : String(moves);
+    this.aiLabel.textContent = thinking ? 'AI thinking…' : 'AI best';
+    this.loadAiBtn.hidden = thinking || !canLoad;
   }
 
   setEditState(canUndo: boolean, canReset: boolean): void {

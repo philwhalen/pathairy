@@ -1,6 +1,10 @@
 /**
  * Generates N local maps per type and prints histograms next to the 80 sampled maps (all files in reference/original/api/gen), plus the
  * no-walls path length (local engine on both). Usage: npm run genstats [-- N]
+ *
+ * Optional difficulty comparison with the solver (slow): `--solver-ms MS` solves every sampled
+ * map and the first `--solver-maps K` (default 30) local maps of each type for MS ms each, and
+ * compares the solver's best scores.
  */
 import { readdirSync, readFileSync } from 'node:fs';
 import { computePaths } from '../src/engine/pathing';
@@ -8,8 +12,18 @@ import { mapJsonToMapData } from '../src/engine/mapcode';
 import type { MapData } from '../src/engine/types';
 import { generateMap } from '../src/generator/generate';
 import { MAP_TYPES } from '../src/generator/presets';
+import { solve } from '../src/solver/solve';
 
-const N = Number(process.argv[2] ?? 1000);
+const argv = process.argv.slice(2);
+const opt = (name: string): number | undefined => {
+  const i = argv.indexOf(`--${name}`);
+  return i >= 0 ? Number(argv[i + 1]) : undefined;
+};
+const N = Number(
+  argv.find((a, i) => !a.startsWith('--') && !argv[i - 1]?.startsWith('--')) ?? 1000,
+);
+const SOLVER_MS = opt('solver-ms') ?? 0;
+const SOLVER_MAPS = opt('solver-maps') ?? 30;
 const GEN_DIR = new URL('../reference/original/api/gen/', import.meta.url);
 
 interface Row {
@@ -20,6 +34,10 @@ interface Row {
   walls: number;
   len: number;
   attempts: number;
+}
+
+function solved(map: MapData): number {
+  return solve(map, { seed: 1, timeLimitMs: SOLVER_MS }).moves;
 }
 
 function measure(map: MapData, attempts: number): Row {
@@ -83,11 +101,14 @@ function printLenHist(local: number[], sample: number[]) {
 
 for (const type of MAP_TYPES) {
   const samples: Row[] = [];
+  const sampleMaps: MapData[] = [];
   const names = readdirSync(GEN_DIR).filter((f) => f.startsWith(`${type}_`));
   for (const name of names) {
     const file = new URL(name, GEN_DIR);
     const json = JSON.parse(readFileSync(file, 'utf8'));
-    samples.push(measure(mapJsonToMapData(json), json.debug?.numberOfAttempts ?? 1));
+    const map = mapJsonToMapData(json);
+    sampleMaps.push(map);
+    samples.push(measure(map, json.debug?.numberOfAttempts ?? 1));
   }
   const t0 = performance.now();
   const local: Row[] = [];
@@ -121,4 +142,24 @@ for (const type of MAP_TYPES) {
     `  median ratio local/sample = ${(q(ll, 0.5) / q(sl, 0.5)).toFixed(2)}  (mean ratio ${(mean(ll) / mean(sl)).toFixed(2)})`,
   );
   printLenHist(ll, sl);
+  if (SOLVER_MS > 0) {
+    const t1 = performance.now();
+    const k = Math.min(SOLVER_MAPS, N);
+    const ls: number[] = [];
+    const lr: number[] = [];
+    for (let seed = 1; seed <= k; seed++) {
+      ls.push(solved(generateMap(type, seed).map));
+      lr.push(ls[ls.length - 1]! / local[seed - 1]!.len);
+    }
+    const ss = sampleMaps.map(solved);
+    const sr = ss.map((v, i) => v / samples[i]!.len);
+    console.log(
+      `  solver best (${SOLVER_MS} ms/map, ${((performance.now() - t1) / 1000).toFixed(0)} s)  local n=${k}: ${lenSummary(ls)}`,
+    );
+    console.log(`                                 sample n=${ss.length}: ${lenSummary(ss)}`);
+    console.log(
+      `  median ratio local/sample = ${(q(ls, 0.5) / q(ss, 0.5)).toFixed(2)}  (mean ratio ${(mean(ls) / mean(ss)).toFixed(2)})` +
+        `;  solved/no-walls median: local ${q(lr, 0.5).toFixed(2)}, sample ${q(sr, 0.5).toFixed(2)}`,
+    );
+  }
 }
