@@ -6,3 +6,14 @@ coverage
 tools/oracle/analyst.js
 # maps downloaded from pathery.com by the dev server (tools/pathery-site.ts)
 .cache
+
+# Rust build output and Python caches (ml/)
+ml/engine-rs/target
+__pycache__
+*.pyc
+.venv
+# Generated map dumps and fetch control files (ml/data/)
+ml/data/*.jsonl
+ml/data/fetch.*
+ml/runs
+ml/data/eval-*.json
